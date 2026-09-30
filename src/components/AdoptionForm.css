@@ -12,5 +12,18 @@
 
 .adoption-form__footer ion-toolbar {
   --background: var(--ion-background-color);
-  padding: 8px 16px;
+  /* Ionic ignora padding en ion-toolbar: variables. Abajo suma ya la zona segura del móvil */
+  --padding-top: 12px;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-bottom: max(12px, calc(30px - var(--ion-safe-area-bottom, 0px)));
+}
+
+.adoption-form__submit {
+  width: 100%;
+}
+
+.adoption-form__submit:disabled {
+  opacity: 0.6;
+  cursor: default;
 }

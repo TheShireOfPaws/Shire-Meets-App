@@ -222,7 +222,19 @@
   --background: var(--shire-cream);
   --border-width: 1px 0 0;
   --border-color: var(--shire-line);
-  padding: 12px 20px calc(12px + var(--ion-safe-area-bottom, 0px));
+  /* Ionic ignora padding en ion-toolbar: variables. Abajo suma ya la zona segura del móvil */
+  --padding-top: 12px;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-bottom: max(12px, calc(30px - var(--ion-safe-area-bottom, 0px)));
+}
+
+.dog-detail__actions .btn {
+  flex: 1 1 0;
+}
+
+.dog-detail__actions .btn--wide {
+  flex-grow: 1.4;
 }
 
 .dog-detail__actions {

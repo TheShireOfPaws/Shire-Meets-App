@@ -111,7 +111,9 @@ ion-app::after {
 
 /* ---------- Cabecera de página: antetítulo + título grande ---------- */
 .page-header ion-toolbar {
-  --min-height: 64px;
+  --min-height: 56px;
+  --padding-top: 4px;
+  --padding-bottom: 4px;
   --padding-start: 20px;
   --padding-end: 20px;
   --border-width: 0;
@@ -152,7 +154,8 @@ ion-tab-bar {
   gap: 10px;
   /* content-box (lo fuerza Ionic): 52px de botón + el padding */
   height: 52px;
-  padding: 8px 20px calc(10px + var(--ion-safe-area-bottom, 0px));
+  /* 26px abajo como en el diseño, o la zona segura del móvil si es mayor */
+  padding: 8px 20px max(26px, var(--ion-safe-area-bottom, 0px));
   border-top: 1px solid var(--shire-line);
 }
 
@@ -174,8 +177,9 @@ ion-tab-button ion-label {
   font-weight: 600;
 }
 
+/* Hueco de 8px entre icono y texto, como en el diseño */
 ion-tab-button ion-icon {
-  margin: 0;
+  margin: 0 8px 0 0;
   font-size: 22px;
 }
 
@@ -206,8 +210,10 @@ ion-tab-button.tab-selected {
 }
 
 /* ---------- Botones grandes del rediseño ---------- */
+/* Sin flex por defecto: en columnas, flex: 1 anulaba la altura y el botón quedaba finito */
 .btn {
-  flex: 1;
+  flex: none;
+  box-sizing: border-box;
   height: 56px;
   padding: 0 18px;
   border: none;
@@ -221,8 +227,18 @@ ion-tab-button.tab-selected {
   transform: scale(0.98);
 }
 
-.btn--wide {
-  flex: 1.4;
+/* En filas de botones ("not now" + "I'd love to meet"): mismo reparto que el diseño, 1 : 1.4 */
+.btn-row {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-row .btn {
+  flex: 1 1 0;
+}
+
+.btn-row .btn--wide {
+  flex-grow: 1.4;
 }
 
 .btn--primary {

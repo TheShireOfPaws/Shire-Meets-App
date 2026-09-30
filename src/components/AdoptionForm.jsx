@@ -316,9 +316,14 @@ export default function AdoptionForm({ dog, isOpen, onClose }) {
 
       <IonFooter className="ion-no-border adoption-form__footer">
         <IonToolbar>
-          <IonButton expand="block" onClick={handleSubmit} disabled={submitting}>
+          <button
+            type="button"
+            className="btn btn--primary adoption-form__submit"
+            onClick={handleSubmit}
+            disabled={submitting}
+          >
             {submitting ? 'sending…' : 'send request'}
-          </IonButton>
+          </button>
         </IonToolbar>
       </IonFooter>
     </IonModal>
