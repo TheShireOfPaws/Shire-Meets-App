@@ -119,3 +119,7 @@
   clip-path: none;
   opacity: 1;
 }
+
+.matches__count {
+  font-weight: 400;
+}

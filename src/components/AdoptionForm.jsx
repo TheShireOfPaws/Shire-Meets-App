@@ -84,7 +84,7 @@ function validate(v) {
 }
 
 export default function AdoptionForm({ dog, isOpen, onClose }) {
-  const { profile, saveProfile, markRequested } = useSwipe();
+  const { profile, preferences, saveProfile, markRequested } = useSwipe();
   const [presentToast] = useIonToast();
 
   const [values, setValues] = useState(EMPTY);
@@ -98,6 +98,8 @@ export default function AdoptionForm({ dog, isOpen, onClose }) {
     if (!isOpen) return;
     setValues({
       ...EMPTY,
+      // Si aún no hay perfil, el tipo de casa sale de las preferencias
+      housingType: preferences?.housing ?? '',
       ...Object.fromEntries(
         Object.entries(profile ?? {})
           .filter(([key, value]) => key in EMPTY && value != null)

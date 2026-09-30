@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { IonButton, IonContent, IonModal } from '@ionic/react';
+import PillGroup from './PillGroup';
 import { GENDER_LABELS, SIZE_LABELS } from '../utils/labels';
 import './FilterSheet.css';
 
@@ -12,28 +13,6 @@ const GENDER_OPTIONS = [
   ['MALE', GENDER_LABELS.MALE],
   ['FEMALE', GENDER_LABELS.FEMALE],
 ];
-
-function PillGroup({ id, label, options, value, onChange }) {
-  return (
-    <fieldset className="pill-group">
-      <legend id={id}>{label}</legend>
-      <div className="pill-group__options">
-        {options.map(([optionValue, optionLabel]) => (
-          <label key={optionValue || 'any'} className="pill">
-            <input
-              type="radio"
-              name={id}
-              value={optionValue}
-              checked={value === optionValue}
-              onChange={() => onChange(optionValue)}
-            />
-            <span>{optionLabel}</span>
-          </label>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
 
 export default function FilterSheet({ isOpen, filters, onApply, onClose }) {
   const [draft, setDraft] = useState(filters);

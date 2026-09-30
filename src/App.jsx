@@ -15,7 +15,6 @@ import { heart, paw } from 'ionicons/icons';
 import Discover from './pages/Discover';
 import Matches from './pages/Matches';
 import DogProfile from './pages/DogProfile';
-import { useSwipe } from './store/SwipeContext';
 
 // Mismo aspecto en Android e iOS; sin transiciones de Ionic si se pide reducir movimiento
 setupIonicReact({
@@ -24,9 +23,6 @@ setupIonicReact({
 });
 
 export default function App() {
-  const { liked } = useSwipe();
-  const matchCount = Object.keys(liked).length;
-
   return (
     <IonApp>
       <IonReactRouter>
@@ -47,7 +43,7 @@ export default function App() {
             </IonTabButton>
             <IonTabButton tab="matches" href="/matches">
               <IonIcon aria-hidden="true" icon={heart} />
-              <IonLabel>{matchCount > 0 ? `Matches (${matchCount})` : 'Matches'}</IonLabel>
+              <IonLabel>Matches</IonLabel>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>

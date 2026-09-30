@@ -23,6 +23,7 @@ import {
   PLACEHOLDER_IMG,
   SIZE_LABELS,
   STATUS_LABELS,
+  TRAIT_LABELS,
   ageLabel,
   showPlaceholder,
 } from '../utils/labels';
@@ -111,6 +112,18 @@ export default function DogProfile() {
             ))}
             {!available && <li className="chip chip--status">{STATUS_LABELS[dog.status]}</li>}
           </ul>
+          {dog.traits?.length > 0 && (
+            <>
+              <h2 className="dog-profile__subtitle">personality</h2>
+              <ul className="dog-profile__chips">
+                {dog.traits.map((t) => (
+                  <li key={t} className="chip chip--trait">
+                    {TRAIT_LABELS[t] ?? t}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
           <h2 className="dog-profile__subtitle">{dog.name}'s story</h2>
           <p className="dog-profile__story">{dog.story || 'No story yet.'}</p>
         </div>

@@ -114,7 +114,9 @@ export default function Matches() {
               ))}
             </ul>
 
-            <h2 className="matches__heading">all matches</h2>
+            <h2 className="matches__heading">
+              all matches <span className="matches__count">({matches.length})</span>
+            </h2>
             <IonList inset className="matches__list">
               {matches.map((entry) => (
                 <IonItemSliding key={entry.dog.id}>

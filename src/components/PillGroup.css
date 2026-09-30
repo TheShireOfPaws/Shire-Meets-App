@@ -1,0 +1,56 @@
+.pill-group {
+  margin: 0 0 16px;
+  padding: 0;
+  border: none;
+}
+
+.pill-group legend {
+  margin-bottom: 8px;
+  padding: 0;
+  font-weight: 600;
+}
+
+.pill-group__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Radio o casilla nativos, invisibles pero accesibles (teclado y lector de pantalla) */
+.pill input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.pill span {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 2px solid var(--ion-color-primary);
+  border-radius: 999px;
+  color: var(--ion-color-primary);
+  font-weight: 500;
+}
+
+.pill input:checked + span {
+  background: var(--ion-color-primary);
+  color: #fff;
+}
+
+.pill input:focus-visible + span {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.pill-group__hint {
+  font-weight: 400;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}

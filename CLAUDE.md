@@ -21,7 +21,7 @@ URL base en `.env` → `VITE_API_URL` (local: `http://localhost:8080`).
 
 Las listas devuelven un `Page` de Spring: `{ content: [...], last: boolean, number, totalElements }`. `pageSize` máximo 50.
 
-**DogResponse**: `id (UUID), name, story, gender, age, size, photoUrl (URL absoluta de Cloudinary o null), status, adoptedBy, adoptionRequestsCount, createdAt, updatedAt`
+**DogResponse**: `id (UUID), name, story, gender, age, size, photoUrl (URL absoluta de Cloudinary o null), status, adoptedBy, traits (array de DogTrait, ordenado; puede faltar en backends antiguos), adoptionRequestsCount, createdAt, updatedAt`
 
 **AdoptionRequestRequest** (validaciones del backend, replicarlas en el cliente):
 - `requesterFirstName`, `requesterLastName`: obligatorios, 2–50 caracteres
@@ -32,11 +32,12 @@ Las listas devuelven un `Page` de Spring: `{ content: [...], last: boolean, numb
 - `daytimeLocation`: opcional, máx. 1000
 - `dogId`: UUID obligatorio
 
-**Enums**: `DogStatus AVAILABLE | IN_PROCESS | ADOPTED` · `DogSize SMALL | MEDIUM | LARGE | EXTRA_LARGE` · `DogGender MALE | FEMALE | UNKNOWN`
+**Enums**: `DogStatus AVAILABLE | IN_PROCESS | ADOPTED` · `DogSize SMALL | MEDIUM | LARGE | EXTRA_LARGE` · `DogGender MALE | FEMALE | UNKNOWN` · `DogTrait ACTIVE | CALM | AFFECTIONATE | GOOD_WITH_KIDS | GOOD_WITH_DOGS | HOUSE_TRAINED`
 
 **Errores** (`GlobalExceptionHandler`): `{ status, error, message, path, details: ["campo: mensaje", ...] }`. Mostrar `details` si existe, si no `message`.
 
 No hay cuentas de usuario público: los likes, passes y datos del adoptante se guardan en local con Preferences.
+Las preferencias del adoptante (tamaños, edades, sexo, casa, rasgos) también son locales: ordenan la pila, no la filtran.
 
 ## Diseño
 Colores y fuente de la web (`src/styles/variables.css` del frontend):
@@ -52,8 +53,8 @@ src/
   App.jsx  main.jsx  theme.css
   services/  api.js  dogService.js  adoptionService.js
   store/     SwipeContext.jsx
-  utils/     labels.js
-  components/ SwipeCard  MatchModal  AdoptionForm
+  utils/     labels.js  matching.js
+  components/ SwipeCard  MatchModal  AdoptionForm  FilterSheet  PillGroup  PreferencesModal
   pages/     Discover  Matches  DogProfile
 ```
 
@@ -62,6 +63,6 @@ src/
 - Antes de escribir código, dame un plan corto de la fase (archivos que vas a crear o tocar).
 - Al terminar: `npm run build` sin errores, dime cómo probarlo y **para** hasta que yo lo revise.
 - No instales dependencias que no estén en este documento sin preguntarme.
-- No toques el repo del backend salvo el cambio de CORS de la fase 0.
+- No toques el backend ni la web salvo lo pedido: CORS (fase 0) y rasgos de personalidad (fase 8, ramas `feat/dog-traits`).
 - Comentarios en el código en español, cortos y solo donde aporten.
 - Un commit por fase con mensaje `feat(fase-N): ...`.

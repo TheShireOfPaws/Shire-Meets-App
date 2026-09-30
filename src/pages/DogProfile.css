@@ -73,6 +73,13 @@
   font-weight: 600;
 }
 
+.chip--trait {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--ion-color-primary);
+  color: var(--ion-color-primary);
+  font-weight: 600;
+}
+
 .dog-profile__subtitle {
   margin: 0 0 8px;
   font-size: 1.25rem;

@@ -11,23 +11,28 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
-import { arrowUndo, close, heart, optionsOutline } from 'ionicons/icons';
+import { arrowUndo, close, heart, optionsOutline, sparklesOutline } from 'ionicons/icons';
 
 import FilterSheet, { NO_FILTERS } from '../components/FilterSheet';
 import MatchModal from '../components/MatchModal';
+import PreferencesModal from '../components/PreferencesModal';
 import SwipeCard from '../components/SwipeCard';
 import { getAvailable } from '../services/dogService';
 import { getErrorMessage } from '../services/api';
 import { useSwipe } from '../store/SwipeContext';
 import { GENDER_LABELS, SIZE_LABELS } from '../utils/labels';
+import { isGreatMatch, rankDogs } from '../utils/matching';
 import './Discover.css';
 
 const VISIBLE = 3;
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 50; // máximo del backend
+// Se cargan todos los disponibles (hasta 500 por tanda) para poder ordenarlos por afinidad
+const MAX_PAGES = 10;
 
 export default function Discover() {
   const history = useHistory();
-  const { ready, seenIds, lastAction, like, pass, undo, resetPassed } = useSwipe();
+  const { ready, seenIds, lastAction, preferences, like, pass, undo, resetPassed, savePreferences } =
+    useSwipe();
 
   const [deck, setDeck] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -37,6 +42,7 @@ export default function Discover() {
   const [matchOpen, setMatchOpen] = useState(false);
   const [filters, setFilters] = useState(NO_FILTERS);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [editingPrefs, setEditingPrefs] = useState(false);
 
   const pageRef = useRef(0);
   const loadingRef = useRef(false);
@@ -48,6 +54,8 @@ export default function Discover() {
   deckRef.current = deck;
   const filtersRef = useRef(filters);
   filtersRef.current = filters;
+  const prefsRef = useRef(preferences);
+  prefsRef.current = preferences;
   // Sube al reiniciar la pila: descarta respuestas de cargas anteriores
   const generationRef = useRef(0);
   // Color fijo por perro para que no cambie al avanzar la pila
@@ -67,10 +75,9 @@ export default function Discover() {
     setError(null);
 
     try {
-      let added = [];
+      const all = [];
       let last = false;
-      // Si una página queda vacía tras filtrar, se pide la siguiente
-      while (added.length === 0 && !last) {
+      for (let pages = 0; !last && pages < MAX_PAGES; pages++) {
         const page = await getAvailable({
           page: pageRef.current,
           pageSize: PAGE_SIZE,
@@ -79,10 +86,12 @@ export default function Discover() {
         if (generation !== generationRef.current) return;
         pageRef.current += 1;
         last = page.last;
-        const inDeck = new Set(deckRef.current.map((d) => d.id));
-        added = page.content.filter((d) => !seenRef.current.has(d.id) && !inDeck.has(d.id));
+        all.push(...page.content);
       }
-      setDeck((prev) => [...prev, ...added.filter((d) => !prev.some((p) => p.id === d.id))]);
+      const inDeck = new Set(deckRef.current.map((d) => d.id));
+      const fresh = all.filter((d) => !seenRef.current.has(d.id) && !inDeck.has(d.id));
+      const ranked = rankDogs(fresh, prefsRef.current);
+      setDeck((prev) => [...prev, ...ranked.filter((d) => !prev.some((p) => p.id === d.id))]);
       setHasMore(!last);
     } catch (err) {
       if (generation === generationRef.current) setError(getErrorMessage(err));
@@ -92,10 +101,11 @@ export default function Discover() {
     }
   }, []);
 
-  // Carga inicial y precarga cuando quedan menos de 3 tarjetas
+  // Carga inicial (tras elegir o saltar las preferencias) y precarga si quedan pocas tarjetas
+  const hasPreferences = preferences !== null;
   useEffect(() => {
-    if (ready && deck.length < VISIBLE && hasMore && !loading && !error) loadMore();
-  }, [ready, deck.length, hasMore, loading, error, loadMore]);
+    if (ready && hasPreferences && deck.length < VISIBLE && hasMore && !loading && !error) loadMore();
+  }, [ready, hasPreferences, deck.length, hasMore, loading, error, loadMore]);
 
   const handleSwiped = useCallback(
     (dog, dir) => {
@@ -139,6 +149,13 @@ export default function Discover() {
     resetDeck();
   }
 
+  function handleSavePreferences(next) {
+    savePreferences(next);
+    setEditingPrefs(false);
+    // Reordenar desde cero con las preferencias nuevas
+    resetDeck();
+  }
+
   function applyFilters(next) {
     setFiltersOpen(false);
     if (next.size === filters.size && next.gender === filters.gender) return;
@@ -154,7 +171,7 @@ export default function Discover() {
   const isEmpty = deck.length === 0;
 
   let body;
-  if (!ready || (isEmpty && loading)) {
+  if (!ready || !hasPreferences || (isEmpty && loading)) {
     body = (
       <div className="discover__state">
         <IonSpinner name="crescent" color="primary" />
@@ -201,6 +218,7 @@ export default function Discover() {
               colorIndex={colorOf(dog.id)}
               depth={i}
               isTop={i === 0}
+              greatMatch={isGreatMatch(dog, preferences)}
               onSwiped={handleSwiped}
               onOpen={handleOpen}
             />
@@ -243,6 +261,9 @@ export default function Discover() {
         <IonToolbar>
           <IonTitle>Discover</IonTitle>
           <IonButtons slot="end">
+            <IonButton onClick={() => setEditingPrefs(true)} aria-label="my preferences">
+              <IonIcon slot="icon-only" icon={sparklesOutline} aria-hidden="true" />
+            </IonButton>
             {/* key: Ionic solo copia aria-label al botón interno al montarse */}
             <IonButton
               key={filtersLabel}
@@ -272,6 +293,13 @@ export default function Discover() {
           isOpen={matchOpen}
           onRequest={handleRequest}
           onClose={() => setMatchOpen(false)}
+        />
+        <PreferencesModal
+          isOpen={ready && (!hasPreferences || editingPrefs)}
+          firstTime={!hasPreferences}
+          preferences={preferences}
+          onSave={handleSavePreferences}
+          onClose={() => setEditingPrefs(false)}
         />
         <FilterSheet
           isOpen={filtersOpen}

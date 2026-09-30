@@ -135,3 +135,17 @@ pages/Matches.jsx.
    y el ciclo `npm run build && npx cap sync`.
 
 **Criterio de hecho:** la app se instala en el emulador y hace el flujo completo contra el backend.
+
+## Fase 8 — preferencias, rasgos e historia en la tarjeta
+
+Pedida después de la fase 7. Toca también backend y web (ramas `feat/dog-traits`).
+
+1. Backend: enum `DogTrait` (active, calm, affectionate, good with kids, good with dogs, house-trained),
+   `traits` en `Dog`, `DogRequest` y `DogResponse`; rasgos rellenados en los perros existentes.
+2. Web: casillas "Personality" en el formulario de admin y etiquetas en la ficha del perro.
+3. App: pantalla de preferencias la primera vez (tamaño, edad, sexo, casa, personalidad), editable desde Discover.
+   Las preferencias **ordenan** la pila (no filtran) y marcan "great match".
+4. App: rasgos en la tarjeta y botón "i" que despliega la historia sobre la foto sin salir de Discover.
+
+**Criterio de hecho:** al entrar por primera vez sale la pantalla de preferencias; los perros que mejor encajan salen
+primero; la historia se lee desde la tarjeta y el swipe sigue funcionando.

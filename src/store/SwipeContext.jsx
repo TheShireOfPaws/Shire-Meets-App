@@ -8,6 +8,7 @@ const initialState = {
   passed: [], // [id]
   lastAction: null, // { type: 'like' | 'pass', dog }
   profile: null,
+  preferences: null, // null = aún no ha pasado por la pantalla de preferencias
 };
 
 const SwipeContext = createContext(null);
@@ -132,6 +133,11 @@ export function SwipeProvider({ children }) {
 
   const saveProfile = useCallback((profile) => update((s) => ({ ...s, profile })), [update]);
 
+  const savePreferences = useCallback(
+    (preferences) => update((s) => ({ ...s, preferences })),
+    [update]
+  );
+
   const seenIds = useMemo(
     () => new Set([...Object.keys(state.liked), ...state.passed]),
     [state.liked, state.passed]
@@ -150,8 +156,9 @@ export function SwipeProvider({ children }) {
       markRequested,
       resetPassed,
       saveProfile,
+      savePreferences,
     }),
-    [state, seenIds, ready, like, pass, undo, unlike, refreshDog, markRequested, resetPassed, saveProfile]
+    [state, seenIds, ready, like, pass, undo, unlike, refreshDog, markRequested, resetPassed, saveProfile, savePreferences]
   );
 
   return <SwipeContext.Provider value={value}>{children}</SwipeContext.Provider>;
