@@ -1,0 +1,60 @@
+/* Colores de la marca (los mismos que la web) */
+:root {
+  --shire-cream: #faf6f2;
+  --shire-green: #114c2a;
+  --shire-gold: #b8860b;
+  --shire-brown: #382903;
+
+  --ion-font-family: 'Fredoka', system-ui, sans-serif;
+
+  /* primary: verde */
+  --ion-color-primary: #114c2a;
+  --ion-color-primary-rgb: 17, 76, 42;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #0f4325;
+  --ion-color-primary-tint: #295e3f;
+
+  /* secondary: dorado */
+  --ion-color-secondary: #b8860b;
+  --ion-color-secondary-rgb: 184, 134, 11;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #a2760a;
+  --ion-color-secondary-tint: #bf9223;
+
+  /* tertiary: marrón */
+  --ion-color-tertiary: #382903;
+  --ion-color-tertiary-rgb: 56, 41, 3;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #312403;
+  --ion-color-tertiary-tint: #4c3e1c;
+
+  /* Fondo crema y texto marrón */
+  --ion-background-color: #faf6f2;
+  --ion-background-color-rgb: 250, 246, 242;
+  --ion-text-color: #382903;
+  --ion-text-color-rgb: 56, 41, 3;
+
+  --ion-toolbar-background: #faf6f2;
+  --ion-toolbar-color: #382903;
+  --ion-tab-bar-background: #faf6f2;
+  --ion-tab-bar-color: rgba(56, 41, 3, 0.55);
+  --ion-tab-bar-color-selected: #114c2a;
+}
+
+/* Foco visible con teclado */
+:focus-visible {
+  outline: 3px solid var(--shire-gold);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
