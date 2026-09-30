@@ -15,11 +15,15 @@ import { heart, paw } from 'ionicons/icons';
 import Discover from './pages/Discover';
 import Matches from './pages/Matches';
 import DogProfile from './pages/DogProfile';
+import { useSwipe } from './store/SwipeContext';
 
 // Mismo aspecto en Android e iOS
 setupIonicReact({ mode: 'ios' });
 
 export default function App() {
+  const { liked } = useSwipe();
+  const matchCount = Object.keys(liked).length;
+
   return (
     <IonApp>
       <IonReactRouter>
@@ -40,7 +44,7 @@ export default function App() {
             </IonTabButton>
             <IonTabButton tab="matches" href="/matches">
               <IonIcon aria-hidden="true" icon={heart} />
-              <IonLabel>Matches</IonLabel>
+              <IonLabel>{matchCount > 0 ? `Matches (${matchCount})` : 'Matches'}</IonLabel>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>
