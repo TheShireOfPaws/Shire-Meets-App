@@ -17,8 +17,11 @@ import Matches from './pages/Matches';
 import DogProfile from './pages/DogProfile';
 import { useSwipe } from './store/SwipeContext';
 
-// Mismo aspecto en Android e iOS
-setupIonicReact({ mode: 'ios' });
+// Mismo aspecto en Android e iOS; sin transiciones de Ionic si se pide reducir movimiento
+setupIonicReact({
+  mode: 'ios',
+  animated: !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+});
 
 export default function App() {
   const { liked } = useSwipe();

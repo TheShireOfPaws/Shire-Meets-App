@@ -1,6 +1,7 @@
 .discover {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   height: 100%;
   max-width: 440px;
   margin: 0 auto;
@@ -11,6 +12,8 @@
   position: relative;
   flex: 1;
   min-height: 0;
+  /* En tablet vertical la tarjeta quedaría demasiado alta */
+  max-height: 640px;
   /* Hueco para las tarjetas de detrás */
   margin-bottom: 36px;
 }
@@ -82,4 +85,37 @@
 .discover__state p {
   margin: 0 0 8px;
   white-space: pre-line;
+}
+
+.filters-dot {
+  position: absolute;
+  top: 6px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--shire-gold);
+}
+
+.discover__filters {
+  --min-height: 32px;
+}
+
+.discover__filters p {
+  margin: 0;
+  padding: 0 16px 6px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.discover__filters button {
+  margin-left: 8px;
+  padding: 2px 4px;
+  border: none;
+  background: none;
+  color: var(--ion-color-primary);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
 }

@@ -21,14 +21,10 @@ import {
 
 import { getById } from '../services/dogService';
 import { useSwipe } from '../store/SwipeContext';
-import { PLACEHOLDER_IMG, STATUS_LABELS, ageLabel } from '../utils/labels';
+import { PLACEHOLDER_IMG, STATUS_LABELS, ageLabel, showPlaceholder } from '../utils/labels';
 import './Matches.css';
 
 const STRIP_SIZE = 10;
-
-const fallbackImg = (e) => {
-  if (!e.currentTarget.src.endsWith(PLACEHOLDER_IMG)) e.currentTarget.src = PLACEHOLDER_IMG;
-};
 
 function StatusBadge({ entry }) {
   const { dog, requested } = entry;
@@ -111,7 +107,7 @@ export default function Matches() {
                     aria-label={`see ${dog.name}'s profile`}
                     onClick={() => open(dog)}
                   >
-                    <img src={dog.photoUrl || PLACEHOLDER_IMG} alt="" onError={fallbackImg} />
+                    <img src={dog.photoUrl || PLACEHOLDER_IMG} alt="" onError={showPlaceholder} />
                     <span aria-hidden="true">{dog.name}</span>
                   </button>
                 </li>
@@ -124,7 +120,7 @@ export default function Matches() {
                 <IonItemSliding key={entry.dog.id}>
                   <IonItem button detail={false} onClick={() => open(entry.dog)}>
                     <IonAvatar slot="start" className="matches__avatar">
-                      <img src={entry.dog.photoUrl || PLACEHOLDER_IMG} alt="" onError={fallbackImg} />
+                      <img src={entry.dog.photoUrl || PLACEHOLDER_IMG} alt="" onError={showPlaceholder} />
                     </IonAvatar>
                     <IonLabel>
                       <h3>{entry.dog.name}</h3>
@@ -139,6 +135,14 @@ export default function Matches() {
                       remove
                     </IonItemOption>
                   </IonItemOptions>
+                  {/* Deslizar no funciona con teclado ni lector de pantalla: botón visible al enfocarlo */}
+                  <button
+                    type="button"
+                    className="matches__remove-a11y"
+                    onClick={() => unlike(entry.dog.id)}
+                  >
+                    remove {entry.dog.name}
+                  </button>
                 </IonItemSliding>
               ))}
             </IonList>

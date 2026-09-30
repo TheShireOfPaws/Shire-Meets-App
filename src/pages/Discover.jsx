@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   IonButton,
+  IonButtons,
   IonContent,
   IonHeader,
   IonIcon,
@@ -10,13 +11,15 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
-import { arrowUndo, close, heart } from 'ionicons/icons';
+import { arrowUndo, close, heart, optionsOutline } from 'ionicons/icons';
 
+import FilterSheet, { NO_FILTERS } from '../components/FilterSheet';
 import MatchModal from '../components/MatchModal';
 import SwipeCard from '../components/SwipeCard';
 import { getAvailable } from '../services/dogService';
 import { getErrorMessage } from '../services/api';
 import { useSwipe } from '../store/SwipeContext';
+import { GENDER_LABELS, SIZE_LABELS } from '../utils/labels';
 import './Discover.css';
 
 const VISIBLE = 3;
@@ -32,6 +35,8 @@ export default function Discover() {
   const [error, setError] = useState(null);
   const [matchDog, setMatchDog] = useState(null);
   const [matchOpen, setMatchOpen] = useState(false);
+  const [filters, setFilters] = useState(NO_FILTERS);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const pageRef = useRef(0);
   const loadingRef = useRef(false);
@@ -41,6 +46,10 @@ export default function Discover() {
   seenRef.current = seenIds;
   const deckRef = useRef(deck);
   deckRef.current = deck;
+  const filtersRef = useRef(filters);
+  filtersRef.current = filters;
+  // Sube al reiniciar la pila: descarta respuestas de cargas anteriores
+  const generationRef = useRef(0);
   // Color fijo por perro para que no cambie al avanzar la pila
   const colors = useRef({ map: new Map(), next: 0 });
 
@@ -53,6 +62,7 @@ export default function Discover() {
   const loadMore = useCallback(async () => {
     if (loadingRef.current) return;
     loadingRef.current = true;
+    const generation = generationRef.current;
     setLoading(true);
     setError(null);
 
@@ -61,7 +71,12 @@ export default function Discover() {
       let last = false;
       // Si una página queda vacía tras filtrar, se pide la siguiente
       while (added.length === 0 && !last) {
-        const page = await getAvailable({ page: pageRef.current, pageSize: PAGE_SIZE });
+        const page = await getAvailable({
+          page: pageRef.current,
+          pageSize: PAGE_SIZE,
+          ...filtersRef.current,
+        });
+        if (generation !== generationRef.current) return;
         pageRef.current += 1;
         last = page.last;
         const inDeck = new Set(deckRef.current.map((d) => d.id));
@@ -70,7 +85,7 @@ export default function Discover() {
       setDeck((prev) => [...prev, ...added.filter((d) => !prev.some((p) => p.id === d.id))]);
       setHasMore(!last);
     } catch (err) {
-      setError(getErrorMessage(err));
+      if (generation === generationRef.current) setError(getErrorMessage(err));
     } finally {
       loadingRef.current = false;
       setLoading(false);
@@ -111,13 +126,29 @@ export default function Discover() {
     if (dog) setDeck((prev) => [dog, ...prev.filter((d) => d.id !== dog.id)]);
   }
 
-  function handleSeeAgain() {
-    resetPassed();
+  function resetDeck() {
+    generationRef.current += 1;
     pageRef.current = 0;
     setDeck([]);
     setHasMore(true);
     setError(null);
   }
+
+  function handleSeeAgain() {
+    resetPassed();
+    resetDeck();
+  }
+
+  function applyFilters(next) {
+    setFiltersOpen(false);
+    if (next.size === filters.size && next.gender === filters.gender) return;
+    setFilters(next);
+    resetDeck();
+  }
+
+  const activeFilters = [SIZE_LABELS[filters.size], GENDER_LABELS[filters.gender]].filter(Boolean);
+  const hasFilters = activeFilters.length > 0;
+  const filtersLabel = hasFilters ? `filters (${activeFilters.length} on)` : 'filters';
 
   const visible = deck.slice(0, VISIBLE);
   const isEmpty = deck.length === 0;
@@ -140,9 +171,19 @@ export default function Discover() {
   } else if (isEmpty && !hasMore) {
     body = (
       <div className="discover__state">
-        <h2>You've seen them all</h2>
-        <p>Check your matches or give the others another look.</p>
-        <IonButton onClick={() => history.push('/matches')}>see my matches</IonButton>
+        {hasFilters ? (
+          <>
+            <h2>No more dogs with these filters</h2>
+            <p>Try other filters or give the others another look.</p>
+            <IonButton onClick={() => applyFilters(NO_FILTERS)}>clear filters</IonButton>
+          </>
+        ) : (
+          <>
+            <h2>You've seen them all</h2>
+            <p>Check your matches or give the others another look.</p>
+            <IonButton onClick={() => history.push('/matches')}>see my matches</IonButton>
+          </>
+        )}
         <IonButton fill="outline" onClick={handleSeeAgain}>
           see them again
         </IonButton>
@@ -201,7 +242,28 @@ export default function Discover() {
       <IonHeader>
         <IonToolbar>
           <IonTitle>Discover</IonTitle>
+          <IonButtons slot="end">
+            {/* key: Ionic solo copia aria-label al botón interno al montarse */}
+            <IonButton
+              key={filtersLabel}
+              onClick={() => setFiltersOpen(true)}
+              aria-label={filtersLabel}
+            >
+              <IonIcon slot="icon-only" icon={optionsOutline} aria-hidden="true" />
+              {hasFilters && <span className="filters-dot" aria-hidden="true" />}
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
+        {hasFilters && (
+          <IonToolbar className="discover__filters">
+            <p>
+              showing: {activeFilters.join(' · ')}
+              <button type="button" onClick={() => applyFilters(NO_FILTERS)}>
+                clear filters
+              </button>
+            </p>
+          </IonToolbar>
+        )}
       </IonHeader>
       <IonContent scrollY={false}>
         <div className="discover">{body}</div>
@@ -210,6 +272,12 @@ export default function Discover() {
           isOpen={matchOpen}
           onRequest={handleRequest}
           onClose={() => setMatchOpen(false)}
+        />
+        <FilterSheet
+          isOpen={filtersOpen}
+          filters={filters}
+          onApply={applyFilters}
+          onClose={() => setFiltersOpen(false)}
         />
       </IonContent>
     </IonPage>

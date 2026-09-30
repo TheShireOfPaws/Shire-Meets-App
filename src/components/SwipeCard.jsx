@@ -1,6 +1,13 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { createGesture } from '@ionic/react';
-import { GENDER_LABELS, PLACEHOLDER_IMG, SIZE_LABELS, ageLabel, cardColor } from '../utils/labels';
+import {
+  GENDER_LABELS,
+  PLACEHOLDER_IMG,
+  SIZE_LABELS,
+  ageLabel,
+  cardColor,
+  showPlaceholder,
+} from '../utils/labels';
 import './SwipeCard.css';
 
 const SWIPE_RATIO = 0.28; // % del ancho para que cuente como swipe
@@ -135,15 +142,13 @@ const SwipeCard = forwardRef(function SwipeCard(
           src={dog.photoUrl || PLACEHOLDER_IMG}
           alt=""
           draggable={false}
-          onError={(e) => {
-            if (!e.currentTarget.src.endsWith(PLACEHOLDER_IMG)) e.currentTarget.src = PLACEHOLDER_IMG;
-          }}
+          onError={showPlaceholder}
         />
         <span ref={likeRef} className="swipe-card__stamp swipe-card__stamp--like" aria-hidden="true">
           like!
         </span>
         <span ref={nopeRef} className="swipe-card__stamp swipe-card__stamp--nope" aria-hidden="true">
-          nope
+          pass
         </span>
       </div>
       <div className="swipe-card__info">

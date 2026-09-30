@@ -96,3 +96,26 @@
 .matches__empty p {
   margin: 0 0 8px;
 }
+
+/* Oculto hasta que recibe el foco con teclado */
+.matches__remove-a11y {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  z-index: 2;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 999px;
+  background: var(--ion-color-danger);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  transform: translateY(-50%);
+  clip-path: inset(50%);
+  opacity: 0;
+}
+
+.matches__remove-a11y:focus {
+  clip-path: none;
+  opacity: 1;
+}

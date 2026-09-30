@@ -86,9 +86,9 @@
   line-height: 1.1;
 }
 
-/* 1.2rem en 600: cuenta como texto grande para el contraste sobre el dorado */
+/* 1.2rem en negrita: cuenta como texto grande para el contraste sobre el dorado */
 .swipe-card__meta {
   margin: 4px 0 0;
   font-size: 1.2rem;
-  font-weight: 600;
+  font-weight: 700;
 }

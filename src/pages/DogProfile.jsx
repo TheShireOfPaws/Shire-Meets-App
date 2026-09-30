@@ -24,6 +24,7 @@ import {
   SIZE_LABELS,
   STATUS_LABELS,
   ageLabel,
+  showPlaceholder,
 } from '../utils/labels';
 import './DogProfile.css';
 
@@ -97,9 +98,7 @@ export default function DogProfile() {
           <img
             src={dog.photoUrl || PLACEHOLDER_IMG}
             alt={dog.name}
-            onError={(e) => {
-              if (!e.currentTarget.src.endsWith(PLACEHOLDER_IMG)) e.currentTarget.src = PLACEHOLDER_IMG;
-            }}
+            onError={showPlaceholder}
           />
         </div>
         <div className="dog-profile__body">
@@ -142,7 +141,9 @@ export default function DogProfile() {
             <IonBackButton defaultHref="/discover" text="" aria-label="back" className="round-btn" />
           </IonButtons>
           <IonButtons slot="end">
+            {/* key: Ionic solo copia los aria-* al botón interno al montarse */}
             <IonButton
+              key={isLiked ? 'liked' : 'not-liked'}
               className="round-btn"
               disabled={!dog}
               onClick={toggleLike}

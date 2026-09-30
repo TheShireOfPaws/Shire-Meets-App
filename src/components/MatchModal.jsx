@@ -1,5 +1,5 @@
 import { IonButton, IonModal } from '@ionic/react';
-import { PLACEHOLDER_IMG } from '../utils/labels';
+import { PLACEHOLDER_IMG, showPlaceholder } from '../utils/labels';
 import './MatchModal.css';
 
 export default function MatchModal({ dog, isOpen, onRequest, onClose }) {
@@ -13,9 +13,7 @@ export default function MatchModal({ dog, isOpen, onRequest, onClose }) {
             className="match__photo"
             src={dog.photoUrl || PLACEHOLDER_IMG}
             alt={dog.name}
-            onError={(e) => {
-              if (!e.currentTarget.src.endsWith(PLACEHOLDER_IMG)) e.currentTarget.src = PLACEHOLDER_IMG;
-            }}
+            onError={showPlaceholder}
           />
           <div className="match__actions">
             <IonButton expand="block" color="secondary" onClick={onRequest}>

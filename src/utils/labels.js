@@ -36,3 +36,8 @@ export function cardColor(index) {
 }
 
 export const PLACEHOLDER_IMG = '/placeholder-dog.svg';
+
+// onError de <img>: cambia a la huella (una sola vez, por si también fallara)
+export function showPlaceholder(e) {
+  if (!e.currentTarget.src.endsWith(PLACEHOLDER_IMG)) e.currentTarget.src = PLACEHOLDER_IMG;
+}

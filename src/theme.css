@@ -19,8 +19,9 @@
   /* secondary: dorado */
   --ion-color-secondary: #b8860b;
   --ion-color-secondary-rgb: 184, 134, 11;
-  --ion-color-secondary-contrast: #ffffff;
-  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  /* Texto oscuro sobre dorado: el blanco solo llega a 3.25:1 */
+  --ion-color-secondary-contrast: #1f1600;
+  --ion-color-secondary-contrast-rgb: 31, 22, 0;
   --ion-color-secondary-shade: #a2760a;
   --ion-color-secondary-tint: #bf9223;
 
@@ -41,14 +42,23 @@
   --ion-toolbar-background: #faf6f2;
   --ion-toolbar-color: #382903;
   --ion-tab-bar-background: #faf6f2;
-  --ion-tab-bar-color: rgba(56, 41, 3, 0.55);
+  --ion-tab-bar-color: rgba(56, 41, 3, 0.72);
   --ion-tab-bar-color-selected: #114c2a;
 }
 
-/* Foco visible con teclado */
-:focus-visible {
-  outline: 3px solid var(--shire-gold);
+/* Foco visible con teclado (verde sobre crema; dorado sobre fondos verdes) */
+:root {
+  --focus-ring: var(--ion-color-primary);
+}
+
+:focus-visible,
+.ion-focused::part(native) {
+  outline: 3px solid var(--focus-ring);
   outline-offset: 2px;
+}
+
+.match-modal {
+  --focus-ring: var(--shire-gold);
 }
 
 @media (prefers-reduced-motion: reduce) {
