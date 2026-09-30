@@ -1,5 +1,15 @@
 {
   "appId": "com.theshireofpaws.match",
   "appName": "Shire Match",
-  "webDir": "dist"
+  "webDir": "dist",
+  "plugins": {
+    "SystemBars": {
+      "style": "DARK"
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#114C2A",
+      "overlaysWebView": false
+    }
+  }
 }

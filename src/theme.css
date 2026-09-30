@@ -74,3 +74,26 @@
 ion-toast::part(message) {
   white-space: pre-line;
 }
+
+/*
+ * Status bar verde en Android 15+: la app ocupa toda la pantalla y la barra es transparente.
+ * Capacitor inyecta --safe-area-inset-* (también en WebViews antiguas donde env() da 0).
+ */
+:root {
+  --ion-safe-area-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --ion-safe-area-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --ion-safe-area-left: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
+  --ion-safe-area-right: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
+}
+
+ion-app::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100000;
+  height: var(--ion-safe-area-top);
+  background: var(--ion-color-primary);
+  pointer-events: none;
+}
