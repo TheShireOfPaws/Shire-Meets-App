@@ -1,15 +1,6 @@
-import { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState } from 'react';
-import { IonIcon, createGesture } from '@ionic/react';
-import { close, informationOutline, star } from 'ionicons/icons';
-import {
-  GENDER_LABELS,
-  PLACEHOLDER_IMG,
-  SIZE_LABELS,
-  TRAIT_LABELS,
-  ageLabel,
-  cardColor,
-  showPlaceholder,
-} from '../utils/labels';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { createGesture } from '@ionic/react';
+import { TRAIT_LABELS, dogPhotos, genderSize, showPlaceholder } from '../utils/labels';
 import './SwipeCard.css';
 
 const SWIPE_RATIO = 0.28; // % del ancho para que cuente como swipe
@@ -22,11 +13,12 @@ const prefersReducedMotion = () =>
   window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
 const SwipeCard = forwardRef(function SwipeCard(
-  { dog, colorIndex, depth, isTop, greatMatch, onSwiped, onOpen },
+  { dog, depth, isTop, greatMatch, onSwiped, onOpen },
   ref
 ) {
-  const [infoOpen, setInfoOpen] = useState(false);
-  const panelId = useId();
+  const [photo, setPhoto] = useState(0);
+  const photos = dogPhotos(dog);
+
   const cardRef = useRef(null);
   const likeRef = useRef(null);
   const nopeRef = useRef(null);
@@ -48,7 +40,7 @@ const SwipeCard = forwardRef(function SwipeCard(
     const rotation = Math.max(-1, Math.min(1, dx / width)) * MAX_ROTATION;
     const progress = Math.min(Math.abs(dx) / (width * SWIPE_RATIO), 1);
 
-    lastDyRef.current = dy * 0.2;
+    lastDyRef.current = dy * 0.3;
     el.style.transition = 'none';
     el.style.transform = `translate(${dx}px, ${lastDyRef.current}px) rotate(${rotation}deg)`;
     setStamps(dx > 0 ? progress : 0, dx < 0 ? progress : 0);
@@ -88,7 +80,7 @@ const SwipeCard = forwardRef(function SwipeCard(
       el,
       gestureName: 'swipe-card',
       threshold: 0,
-      // El botón de info y el panel de la historia no arrastran la tarjeta
+      // El botón de info no arrastra la tarjeta
       canStart: (d) => !d.event.target.closest?.('[data-no-swipe]'),
       onMove: (d) => {
         if (!leavingRef.current) drag(d.deltaX, d.deltaY);
@@ -99,7 +91,14 @@ const SwipeCard = forwardRef(function SwipeCard(
 
         if (Math.abs(dx) < TAP_MAX && Math.abs(dy) < TAP_MAX) {
           snapBack();
-          callbacks.current.onOpen(dog);
+          // Tap: mitad izquierda / derecha cambia de foto; con una sola foto abre el perfil
+          if (photos.length > 1) {
+            const rect = el.getBoundingClientRect();
+            const step = (d.startX - rect.left) / rect.width > 0.5 ? 1 : -1;
+            setPhoto((p) => Math.max(0, Math.min(photos.length - 1, p + step)));
+          } else {
+            callbacks.current.onOpen(dog);
+          }
         } else if (Math.abs(dx) > el.offsetWidth * SWIPE_RATIO || Math.abs(vx) > SWIPE_VELOCITY) {
           flyOut((dx !== 0 ? dx : vx) > 0 ? 'right' : 'left');
         } else {
@@ -125,11 +124,14 @@ const SwipeCard = forwardRef(function SwipeCard(
     }
   }
 
-  const meta = [ageLabel(dog.age), GENDER_LABELS[dog.gender], SIZE_LABELS[dog.size]]
-    .filter(Boolean)
-    .join(' · ');
+  const meta = genderSize(dog);
   const traits = (dog.traits ?? []).map((t) => TRAIT_LABELS[t]).filter(Boolean);
-  const label = [dog.name, greatMatch && 'great match', meta, traits.join(', ')]
+  const label = [
+    `${dog.name}, ${dog.age} ${dog.age === 1 ? 'year' : 'years'}`,
+    greatMatch && 'great match',
+    meta,
+    traits.join(', '),
+  ]
     .filter(Boolean)
     .join(', ');
 
@@ -138,7 +140,7 @@ const SwipeCard = forwardRef(function SwipeCard(
       ref={cardRef}
       className="swipe-card"
       data-depth={depth}
-      style={{ '--card-color': cardColor(colorIndex), zIndex: 10 - depth }}
+      style={{ zIndex: 10 - depth }}
       aria-hidden={!isTop}
       {...(isTop && {
         tabIndex: 0,
@@ -149,56 +151,53 @@ const SwipeCard = forwardRef(function SwipeCard(
         onKeyDown: handleKeyDown,
       })}
     >
-      <div className="swipe-card__photo">
-        <img
-          src={dog.photoUrl || PLACEHOLDER_IMG}
-          alt=""
-          draggable={false}
-          onError={showPlaceholder}
-        />
-        <span ref={likeRef} className="swipe-card__stamp swipe-card__stamp--like" aria-hidden="true">
-          like!
-        </span>
-        <span ref={nopeRef} className="swipe-card__stamp swipe-card__stamp--nope" aria-hidden="true">
-          pass
-        </span>
-        {greatMatch && (
-          <span className="swipe-card__badge" aria-hidden="true">
-            <IonIcon icon={star} /> great match
-          </span>
-        )}
-        {infoOpen && (
-          <div id={panelId} className="swipe-card__panel" data-no-swipe>
-            <h3>{dog.name}'s story</h3>
-            <p>{dog.story || 'No story yet.'}</p>
-            {traits.length > 0 && (
-              <ul className="swipe-card__panel-traits">
-                {traits.map((t) => (
-                  <li key={t}>{t}</li>
-                ))}
-              </ul>
-            )}
+      <img
+        className="swipe-card__img"
+        src={photos[photo]}
+        alt=""
+        draggable={false}
+        onError={showPlaceholder}
+      />
+
+      {photos.length > 1 && (
+        <div className="swipe-card__bars" aria-hidden="true">
+          {photos.map((url, i) => (
+            <span key={url} className={i === photo ? 'is-active' : undefined} />
+          ))}
+        </div>
+      )}
+
+      {/* Sellos en mayúsculas como en el diseño (excepción a las etiquetas en minúscula) */}
+      <span ref={likeRef} className="swipe-card__stamp swipe-card__stamp--like" aria-hidden="true">
+        ADOPT ME
+      </span>
+      <span ref={nopeRef} className="swipe-card__stamp swipe-card__stamp--nope" aria-hidden="true">
+        NOT NOW
+      </span>
+
+      <div className="swipe-card__overlay">
+        {greatMatch && <span className="great-badge">★ great match</span>}
+        <div className="swipe-card__row">
+          <div className="swipe-card__titles">
+            <h2 className="swipe-card__name">
+              {dog.name} <span className="swipe-card__age">{dog.age}</span>
+            </h2>
+            <p className="swipe-card__meta">{meta}</p>
           </div>
-        )}
-        <button
-          type="button"
-          className="swipe-card__info-btn"
-          data-no-swipe
-          tabIndex={isTop ? 0 : -1}
-          aria-expanded={infoOpen}
-          aria-controls={panelId}
-          aria-label={infoOpen ? `hide ${dog.name}'s story` : `read ${dog.name}'s story`}
-          onClick={() => setInfoOpen((open) => !open)}
-        >
-          <IonIcon icon={infoOpen ? close : informationOutline} aria-hidden="true" />
-        </button>
-      </div>
-      <div className="swipe-card__info">
-        <h2 className="swipe-card__name">{dog.name}</h2>
-        <p className="swipe-card__meta">{meta}</p>
+          <button
+            type="button"
+            className="swipe-card__info"
+            data-no-swipe
+            tabIndex={isTop ? 0 : -1}
+            aria-label={`more about ${dog.name}`}
+            onClick={() => onOpen(dog)}
+          >
+            i
+          </button>
+        </div>
         {traits.length > 0 && (
           <ul className="swipe-card__traits" aria-hidden="true">
-            {traits.slice(0, 3).map((t) => (
+            {traits.map((t) => (
               <li key={t}>{t}</li>
             ))}
           </ul>

@@ -6,6 +6,17 @@
   --shire-brown: #382903;
   --shire-red: #c0392b;
 
+  /* Rediseño (Claude Design) */
+  --shire-sand: #efe6da;
+  --shire-soft: #f2eadf;
+  --shire-line: #eee4d6;
+  --shire-muted: #6b5a3a; /* texto secundario, 6.2:1 sobre crema */
+  --shire-hint: #7a6a4a; /* el #8a7a5a del diseño se queda en 3.9:1 */
+  --shire-gold-light: #e8c46a;
+  --shire-mint: #cfe0d4;
+  --shire-dark: #1c1406;
+  --shire-on-gold: #1f1600; /* texto sobre dorado, 5.5:1 */
+
   --ion-font-family: 'Fredoka', system-ui, sans-serif;
 
   /* primary: verde */
@@ -42,8 +53,8 @@
   --ion-toolbar-background: #faf6f2;
   --ion-toolbar-color: #382903;
   --ion-tab-bar-background: #faf6f2;
-  --ion-tab-bar-color: rgba(56, 41, 3, 0.72);
-  --ion-tab-bar-color-selected: #114c2a;
+  --ion-tab-bar-color: #6b5a3a;
+  --ion-tab-bar-color-selected: #faf6f2;
 }
 
 /* Foco visible con teclado (verde sobre crema; dorado sobre fondos verdes) */
@@ -96,4 +107,166 @@ ion-app::after {
   height: var(--ion-safe-area-top);
   background: var(--ion-color-primary);
   pointer-events: none;
+}
+
+/* ---------- Cabecera de página: antetítulo + título grande ---------- */
+.page-header ion-toolbar {
+  --min-height: 64px;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --border-width: 0;
+}
+
+.page-header__inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.page-header__titles {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.page-header__eyebrow {
+  color: var(--shire-gold);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.page-header__title {
+  margin: 2px 0 0;
+  color: var(--ion-color-primary);
+  font-size: 26px;
+  font-weight: 700;
+}
+
+/* ---------- Pestañas en forma de píldora ---------- */
+/* ion-tab-bar lleva contain: strict, así que height: auto daría 0: altura explícita */
+ion-tab-bar {
+  --border: 0;
+  gap: 10px;
+  /* content-box (lo fuerza Ionic): 52px de botón + el padding */
+  height: 52px;
+  padding: 8px 20px calc(10px + var(--ion-safe-area-bottom, 0px));
+  border-top: 1px solid var(--shire-line);
+}
+
+ion-tab-button {
+  position: relative;
+  flex: 1;
+  height: 52px;
+  max-width: none;
+  border-radius: 26px;
+  font-size: 16px;
+  font-weight: 600;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+ion-tab-button ion-label {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+ion-tab-button ion-icon {
+  margin: 0;
+  font-size: 22px;
+}
+
+ion-tab-button.tab-selected {
+  background: var(--ion-color-primary);
+}
+
+/* Punto rojo: hay matches nuevos sin ver */
+.tab-dot {
+  position: absolute;
+  top: 12px;
+  right: calc(50% - 58px);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--shire-red);
+  box-shadow: 0 0 0 2px var(--shire-cream);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Botones grandes del rediseño ---------- */
+.btn {
+  flex: 1;
+  height: 56px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 28px;
+  font: 600 17px var(--ion-font-family);
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn--wide {
+  flex: 1.4;
+}
+
+.btn--primary {
+  background: var(--ion-color-primary);
+  color: var(--shire-cream);
+}
+
+.btn--gold {
+  background: var(--shire-gold);
+  color: var(--shire-on-gold);
+}
+
+.btn--dark {
+  background: var(--shire-brown);
+  color: var(--shire-cream);
+}
+
+.btn--outline-red {
+  border: 1.5px solid var(--shire-red);
+  background: var(--shire-cream);
+  color: var(--shire-red);
+}
+
+.btn--outline-light {
+  border: 1.5px solid rgba(250, 246, 242, 0.5);
+  background: none;
+  color: var(--shire-cream);
+}
+
+/* ---------- Hojas desde abajo (perfil y preferencias) ---------- */
+.sheet-modal {
+  --background: var(--shire-cream);
+  --border-radius: 30px;
+}
+
+.sheet-modal::part(handle) {
+  width: 40px;
+  height: 5px;
+  background: #d8c9b2;
+}
+
+.btn--compact {
+  flex: none;
+  height: 46px;
+  padding: 0 22px;
+  font-size: 16px;
 }

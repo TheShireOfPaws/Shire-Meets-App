@@ -1,0 +1,240 @@
+.dog-detail {
+  --background: var(--shire-cream);
+}
+
+.dog-detail__photo {
+  position: relative;
+  height: 340px;
+  background: #ded1bf;
+}
+
+.dog-detail__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Mitades invisibles para pasar de foto con un toque */
+.dog-detail__zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dog-detail__zone:disabled {
+  cursor: default;
+}
+
+.dog-detail__zone--prev {
+  left: 0;
+}
+
+.dog-detail__zone--next {
+  right: 0;
+}
+
+.dog-detail__bars {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 72px;
+  display: flex;
+  gap: 4px;
+}
+
+.dog-detail__bars button {
+  flex: 1;
+  height: 16px;
+  padding: 6px 0;
+  border: none;
+  background: rgba(255, 255, 255, 0.45);
+  background-clip: content-box;
+  cursor: pointer;
+}
+
+.dog-detail__bars button.is-active {
+  background-color: #fff;
+}
+
+.dog-detail__round {
+  position: absolute;
+  top: 14px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(250, 246, 242, 0.95);
+  color: var(--shire-brown);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.dog-detail__round--end {
+  right: 14px;
+}
+
+.dog-detail__round--start {
+  left: 14px;
+  top: calc(14px + var(--ion-safe-area-top, 0px));
+}
+
+.dog-detail__body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px;
+}
+
+.dog-detail__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dog-detail__heading .great-badge {
+  margin-bottom: 4px;
+}
+
+.dog-detail__name {
+  margin: 0;
+  color: var(--ion-color-primary);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.dog-detail__status {
+  margin: 0;
+  color: var(--shire-muted);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.dog-detail__facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.dog-detail__facts div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.dog-detail__facts dt {
+  color: var(--shire-hint);
+  font-size: 12px;
+}
+
+.dog-detail__facts dd {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dog-detail__section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dog-detail__section h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dog-detail__traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dog-detail__traits li {
+  padding: 6px 14px;
+  border-radius: 16px;
+  background: var(--ion-color-primary);
+  color: var(--shire-cream);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.dog-detail__story {
+  margin: 0;
+  color: #4a3a1a;
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.dog-detail__shelter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.dog-detail__shelter-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--shire-soft);
+  color: var(--ion-color-primary);
+  font-size: 22px;
+}
+
+.dog-detail__shelter div {
+  display: flex;
+  flex-direction: column;
+}
+
+.dog-detail__shelter strong {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dog-detail__shelter span {
+  color: var(--shire-muted);
+  font-size: 13px;
+}
+
+.dog-detail__footer ion-toolbar {
+  --background: var(--shire-cream);
+  --border-width: 1px 0 0;
+  --border-color: var(--shire-line);
+  padding: 12px 20px calc(12px + var(--ion-safe-area-bottom, 0px));
+}
+
+.dog-detail__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.dog-detail__notice {
+  flex: 1;
+  margin: 8px 0;
+  color: var(--shire-muted);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}

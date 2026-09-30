@@ -21,7 +21,7 @@ URL base en `.env` → `VITE_API_URL` (local: `http://localhost:8080`).
 
 Las listas devuelven un `Page` de Spring: `{ content: [...], last: boolean, number, totalElements }`. `pageSize` máximo 50.
 
-**DogResponse**: `id (UUID), name, story, gender, age, size, photoUrl (URL absoluta de Cloudinary o null), status, adoptedBy, traits (array de DogTrait, ordenado; puede faltar en backends antiguos), adoptionRequestsCount, createdAt, updatedAt`
+**DogResponse**: `id (UUID), name, story, gender, age, size, photoUrl (URL absoluta de Cloudinary o null), extraPhotoUrls (hasta 2 fotos más, en orden), status, adoptedBy, traits (array de DogTrait, ordenado; puede faltar en backends antiguos), adoptionRequestsCount, createdAt, updatedAt`
 
 **AdoptionRequestRequest** (validaciones del backend, replicarlas en el cliente):
 - `requesterFirstName`, `requesterLastName`: obligatorios, 2–50 caracteres
@@ -45,6 +45,7 @@ Colores y fuente de la web (`src/styles/variables.css` del frontend):
 - Fuente **Fredoka** (Google Fonts)
 - Las tarjetas alternan dorado / verde / marrón como las `DogCard` de la web
 - Textos de la interfaz siempre en **inglés**, tono cercano, frases cortas, sin mayúsculas en etiquetas (los comentarios del código siguen en español)
+- Diseño: rediseño de Claude Design (fase 9). Excepción: los sellos del swipe van en mayúsculas ("ADOPT ME" / "NOT NOW")
 - Respetar `prefers-reduced-motion`, foco visible, `aria-label` en botones solo con icono
 
 ## Estructura objetivo
@@ -54,7 +55,7 @@ src/
   services/  api.js  dogService.js  adoptionService.js
   store/     SwipeContext.jsx
   utils/     labels.js  matching.js
-  components/ SwipeCard  MatchModal  AdoptionForm  FilterSheet  PillGroup  PreferencesModal
+  components/ SwipeCard  MatchModal  AdoptionForm  DogDetail  DogSheet  PageHeader  PillGroup  PreferencesModal
   pages/     Discover  Matches  DogProfile
 ```
 
@@ -63,6 +64,6 @@ src/
 - Antes de escribir código, dame un plan corto de la fase (archivos que vas a crear o tocar).
 - Al terminar: `npm run build` sin errores, dime cómo probarlo y **para** hasta que yo lo revise.
 - No instales dependencias que no estén en este documento sin preguntarme.
-- No toques el backend ni la web salvo lo pedido: CORS (fase 0) y rasgos de personalidad (fase 8, ramas `feat/dog-traits`).
+- No toques el backend ni la web salvo lo pedido: CORS (fase 0) y rasgos de personalidad (fase 8, ramas `feat/dog-traits`) y fotos extra (fase 9, ramas `feat/dog-photos`).
 - Comentarios en el código en español, cortos y solo donde aporten.
 - Un commit por fase con mensaje `feat(fase-N): ...`.

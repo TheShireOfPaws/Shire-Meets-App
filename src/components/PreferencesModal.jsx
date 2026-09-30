@@ -1,14 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  IonButton,
-  IonButtons,
-  IonContent,
-  IonFooter,
-  IonHeader,
-  IonModal,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/react';
+import { IonContent, IonFooter, IonHeader, IonModal, IonToolbar } from '@ionic/react';
 
 import PillGroup from './PillGroup';
 import {
@@ -18,7 +9,7 @@ import {
   SIZE_LABELS,
   TRAIT_LABELS,
 } from '../utils/labels';
-import { EMPTY_PREFERENCES } from '../utils/matching';
+import { EMPTY_PREFERENCES, isGreatMatch } from '../utils/matching';
 import './PreferencesModal.css';
 
 const GENDER_OPTIONS = [
@@ -28,8 +19,16 @@ const GENDER_OPTIONS = [
 ];
 const HOUSING_OPTIONS = [['', 'rather not say'], ...Object.entries(HOUSING_LABELS)];
 
-// firstTime: pantalla de bienvenida (se puede saltar); si no, edición desde Discover
-export default function PreferencesModal({ isOpen, firstTime, preferences, onSave, onClose }) {
+// Hoja de preferencias (92 % de alto). firstTime: bienvenida, solo se cierra eligiendo o saltando.
+// candidates: perros por ver, para contar cuántos "great match" saldrían con el borrador.
+export default function PreferencesModal({
+  isOpen,
+  firstTime,
+  preferences,
+  candidates = [],
+  onSave,
+  onClose,
+}) {
   const [draft, setDraft] = useState(EMPTY_PREFERENCES);
 
   useEffect(() => {
@@ -37,31 +36,46 @@ export default function PreferencesModal({ isOpen, firstTime, preferences, onSav
   }, [isOpen, preferences]);
 
   const set = (key) => (value) => setDraft((d) => ({ ...d, [key]: value }));
+  const greatCount = candidates.filter((dog) => isGreatMatch(dog, draft)).length;
 
   return (
     <IonModal
       isOpen={isOpen}
       onDidDismiss={onClose}
-      // La primera vez hay que elegir o saltar: no se cierra deslizando
+      breakpoints={[0, 0.92]}
+      initialBreakpoint={0.92}
+      handle={!firstTime}
+      // La primera vez hay que elegir o saltar: no se cierra deslizando ni tocando fuera
       canDismiss={firstTime ? (data, role) => role !== 'gesture' && role !== 'backdrop' : true}
-      className="preferences-modal"
+      className="sheet-modal preferences-modal"
     >
-      <IonHeader>
+      <IonHeader className="ion-no-border">
         <IonToolbar>
-          <IonTitle>{firstTime ? 'Welcome!' : 'My preferences'}</IonTitle>
-          {!firstTime && (
-            <IonButtons slot="end">
-              <IonButton onClick={onClose}>cancel</IonButton>
-            </IonButtons>
-          )}
+          <div className="preferences__bar">
+            <button
+              type="button"
+              className="preferences__text-btn"
+              onClick={() => setDraft(EMPTY_PREFERENCES)}
+            >
+              reset
+            </button>
+            <h2 className="preferences__title">{firstTime ? 'Welcome!' : 'My preferences'}</h2>
+            <button
+              type="button"
+              className="preferences__text-btn"
+              onClick={firstTime ? () => onSave(EMPTY_PREFERENCES) : onClose}
+            >
+              {firstTime ? 'skip' : 'cancel'}
+            </button>
+          </div>
         </IonToolbar>
       </IonHeader>
 
-      <IonContent className="ion-padding">
+      <IonContent className="preferences__content">
         <p className="preferences__intro">
           {firstTime
-            ? "Tell us what you're looking for and we'll show you the dogs that fit you best first. Pick as many as you like."
-            : 'Dogs that fit these best show up first. You still see everyone else after them.'}
+            ? "Tell us what you're looking for and the dogs that fit you best show up first. You'll still see everyone after them."
+            : "Dogs that fit best show up first — you'll still see everyone after them."}
         </p>
 
         <PillGroup
@@ -107,14 +121,11 @@ export default function PreferencesModal({ isOpen, firstTime, preferences, onSav
 
       <IonFooter className="ion-no-border preferences__footer">
         <IonToolbar>
-          <IonButton expand="block" onClick={() => onSave(draft)}>
-            show me dogs
-          </IonButton>
-          {firstTime && (
-            <IonButton expand="block" fill="clear" onClick={() => onSave(EMPTY_PREFERENCES)}>
-              skip for now
-            </IonButton>
-          )}
+          <button type="button" className="btn btn--dark" onClick={() => onSave(draft)}>
+            {greatCount > 0
+              ? `show me dogs · ${greatCount} great ${greatCount === 1 ? 'match' : 'matches'}`
+              : 'show me dogs'}
+          </button>
         </IonToolbar>
       </IonFooter>
     </IonModal>

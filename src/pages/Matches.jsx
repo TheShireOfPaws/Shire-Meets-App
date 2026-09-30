@@ -1,44 +1,37 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
-  IonAvatar,
-  IonButton,
   IonContent,
-  IonHeader,
   IonItem,
   IonItemOption,
   IonItemOptions,
   IonItemSliding,
-  IonLabel,
   IonList,
   IonPage,
   IonRefresher,
   IonRefresherContent,
-  IonTitle,
-  IonToolbar,
   useIonViewWillEnter,
 } from '@ionic/react';
 
+import DogSheet from '../components/DogSheet';
+import PageHeader from '../components/PageHeader';
 import { getById } from '../services/dogService';
 import { useSwipe } from '../store/SwipeContext';
-import { PLACEHOLDER_IMG, STATUS_LABELS, ageLabel, showPlaceholder } from '../utils/labels';
+import { STATUS_LABELS, ageLabel, dogPhotos, genderSize, showPlaceholder } from '../utils/labels';
 import './Matches.css';
 
-const STRIP_SIZE = 10;
+const NEW_ROW_SIZE = 6;
 
-function StatusBadge({ entry }) {
-  const { dog, requested } = entry;
-  // Si ya no está disponible, eso es lo más importante
-  if (dog.status !== 'AVAILABLE') {
-    return <span className="badge badge--status">{STATUS_LABELS[dog.status]}</span>;
-  }
-  if (requested) return <span className="badge badge--requested">request sent</span>;
-  return null;
+function statusLine({ dog, requested }) {
+  if (dog.status !== 'AVAILABLE') return STATUS_LABELS[dog.status];
+  if (requested) return 'request sent';
+  return 'The Shire of Paws';
 }
 
 export default function Matches() {
   const history = useHistory();
   const { ready, liked, unlike, refreshDog } = useSwipe();
+  const [detail, setDetail] = useState(null);
 
   const likedRef = useRef(liked);
   likedRef.current = liked;
@@ -73,83 +66,123 @@ export default function Matches() {
     e.detail.complete();
   }
 
-  const open = (dog) => history.push(`/dog/${dog.id}`, { dog });
+  const open = (dog) => setDetail(dog);
+  const count = matches.length;
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Matches</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
+      <PageHeader title="Matches">
+        {count > 0 && (
+          <span className="matches__count">
+            {count} {count === 1 ? 'dog' : 'dogs'}
+          </span>
+        )}
+      </PageHeader>
+
+      <IonContent className="matches">
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent />
         </IonRefresher>
 
-        {ready && matches.length === 0 && (
+        {ready && count === 0 && (
           <div className="matches__empty">
             <h2>No matches yet</h2>
-            <p>Like a dog in Discover and it will show up here.</p>
-            <IonButton onClick={() => history.push('/discover')}>start discovering</IonButton>
+            <p>Like a dog on Discover and they'll wait for you here.</p>
+            <button
+              type="button"
+              className="btn btn--primary btn--compact"
+              onClick={() => history.push('/discover')}
+            >
+              start discovering
+            </button>
           </div>
         )}
 
-        {matches.length > 0 && (
+        {count > 0 && (
           <>
-            <h2 className="matches__heading">latest</h2>
-            <ul className="matches-strip">
-              {matches.slice(0, STRIP_SIZE).map(({ dog }) => (
-                <li key={dog.id}>
-                  <button
-                    type="button"
-                    className="matches-strip__item"
-                    aria-label={`see ${dog.name}'s profile`}
-                    onClick={() => open(dog)}
-                  >
-                    <img src={dog.photoUrl || PLACEHOLDER_IMG} alt="" onError={showPlaceholder} />
-                    <span aria-hidden="true">{dog.name}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <section className="matches__section">
+              <h2 className="matches__heading">new</h2>
+              <ul className="matches__rings">
+                {matches.slice(0, NEW_ROW_SIZE).map(({ dog, seen }) => (
+                  <li key={dog.id}>
+                    <button
+                      type="button"
+                      className="matches__ring-btn"
+                      aria-label={`${dog.name}${seen === false ? ', new' : ''}`}
+                      onClick={() => open(dog)}
+                    >
+                      <span className="matches__ring">
+                        <img src={dogPhotos(dog)[0]} alt="" onError={showPlaceholder} />
+                        {seen === false && <span className="matches__new-dot" aria-hidden="true" />}
+                      </span>
+                      <span className="matches__ring-name" aria-hidden="true">
+                        {dog.name}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
 
-            <h2 className="matches__heading">
-              all matches <span className="matches__count">({matches.length})</span>
-            </h2>
-            <IonList inset className="matches__list">
-              {matches.map((entry) => (
-                <IonItemSliding key={entry.dog.id}>
-                  <IonItem button detail={false} onClick={() => open(entry.dog)}>
-                    <IonAvatar slot="start" className="matches__avatar">
-                      <img src={entry.dog.photoUrl || PLACEHOLDER_IMG} alt="" onError={showPlaceholder} />
-                    </IonAvatar>
-                    <IonLabel>
-                      <h3>{entry.dog.name}</h3>
-                      <p>{ageLabel(entry.dog.age)}</p>
-                    </IonLabel>
-                    <div slot="end">
-                      <StatusBadge entry={entry} />
-                    </div>
-                  </IonItem>
-                  <IonItemOptions side="end">
-                    <IonItemOption color="danger" onClick={() => unlike(entry.dog.id)}>
-                      remove
-                    </IonItemOption>
-                  </IonItemOptions>
-                  {/* Deslizar no funciona con teclado ni lector de pantalla: botón visible al enfocarlo */}
-                  <button
-                    type="button"
-                    className="matches__remove-a11y"
-                    onClick={() => unlike(entry.dog.id)}
-                  >
-                    remove {entry.dog.name}
-                  </button>
-                </IonItemSliding>
-              ))}
-            </IonList>
+            <section className="matches__section matches__section--list">
+              <h2 className="matches__heading">all matches</h2>
+              <IonList lines="none" className="matches__list">
+                {matches.map((entry) => {
+                  const { dog, requested, seen } = entry;
+                  const isNew = seen === false && !requested;
+                  const cta = requested ? 'view' : isNew ? 'say hi' : 'contact';
+                  return (
+                    <IonItemSliding key={dog.id}>
+                      <IonItem className="match-row">
+                        <div className="match-card">
+                          <button
+                            type="button"
+                            className="match-card__photo"
+                            tabIndex={-1}
+                            aria-hidden="true"
+                            onClick={() => open(dog)}
+                          >
+                            <img src={dogPhotos(dog)[0]} alt="" onError={showPlaceholder} />
+                          </button>
+                          <button type="button" className="match-card__info" onClick={() => open(dog)}>
+                            <span className="match-card__name">{dog.name}</span>
+                            <span className="match-card__meta">
+                              {[ageLabel(dog.age), genderSize(dog)].filter(Boolean).join(' · ')}
+                            </span>
+                            <span className="match-card__status">{statusLine(entry)}</span>
+                          </button>
+                          <button
+                            type="button"
+                            className={`match-card__cta${isNew ? ' match-card__cta--new' : ''}`}
+                            aria-label={`${cta}, ${dog.name}`}
+                            onClick={() => open(dog)}
+                          >
+                            {cta}
+                          </button>
+                        </div>
+                      </IonItem>
+                      <IonItemOptions side="end">
+                        <IonItemOption color="danger" onClick={() => unlike(dog.id)}>
+                          remove
+                        </IonItemOption>
+                      </IonItemOptions>
+                      {/* Deslizar no funciona con teclado ni lector de pantalla: botón visible al enfocarlo */}
+                      <button
+                        type="button"
+                        className="matches__remove-a11y"
+                        onClick={() => unlike(dog.id)}
+                      >
+                        remove {dog.name}
+                      </button>
+                    </IonItemSliding>
+                  );
+                })}
+              </IonList>
+            </section>
           </>
         )}
+
+        <DogSheet dog={detail} onClose={() => setDetail(null)} />
       </IonContent>
     </IonPage>
   );

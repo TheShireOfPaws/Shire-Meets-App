@@ -63,3 +63,14 @@ export const PLACEHOLDER_IMG = '/placeholder-dog.svg';
 export function showPlaceholder(e) {
   if (!e.currentTarget.src.endsWith(PLACEHOLDER_IMG)) e.currentTarget.src = PLACEHOLDER_IMG;
 }
+
+// Foto principal + extras; si no hay ninguna, la huella
+export function dogPhotos(dog) {
+  const photos = [dog.photoUrl, ...(dog.extraPhotoUrls ?? [])].filter(Boolean);
+  return photos.length ? photos : [PLACEHOLDER_IMG];
+}
+
+// "female · large"
+export function genderSize(dog) {
+  return [GENDER_LABELS[dog.gender], SIZE_LABELS[dog.size]].filter(Boolean).join(' · ');
+}

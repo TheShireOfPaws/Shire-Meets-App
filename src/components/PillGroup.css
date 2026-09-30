@@ -1,13 +1,20 @@
 .pill-group {
-  margin: 0 0 16px;
+  margin: 0 0 20px;
   padding: 0;
   border: none;
 }
 
 .pill-group legend {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   padding: 0;
+  font-size: 16px;
   font-weight: 600;
+}
+
+.pill-group__hint {
+  color: var(--shire-hint);
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .pill-group__options {
@@ -31,26 +38,25 @@
 }
 
 .pill span {
-  display: inline-block;
-  padding: 8px 16px;
-  border: 2px solid var(--ion-color-primary);
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 16px;
+  border: 1.5px solid var(--ion-color-primary);
+  border-radius: 20px;
+  background: var(--shire-cream);
   color: var(--ion-color-primary);
+  font-size: 15px;
   font-weight: 500;
+  transition: background 150ms;
 }
 
 .pill input:checked + span {
   background: var(--ion-color-primary);
-  color: #fff;
+  color: var(--shire-cream);
 }
 
 .pill input:focus-visible + span {
   outline: 3px solid var(--focus-ring);
   outline-offset: 2px;
-}
-
-.pill-group__hint {
-  font-weight: 400;
-  font-size: 0.9rem;
-  opacity: 0.8;
 }

@@ -1,11 +1,9 @@
 .discover {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   height: 100%;
   max-width: 440px;
   margin: 0 auto;
-  padding: 12px 16px 16px;
 }
 
 .discover__deck {
@@ -13,25 +11,30 @@
   flex: 1;
   min-height: 0;
   /* En tablet vertical la tarjeta quedaría demasiado alta */
-  max-height: 640px;
-  /* Hueco para las tarjetas de detrás */
-  margin-bottom: 36px;
+  max-height: 680px;
+  /* Hueco abajo para las tarjetas de detrás, que asoman 28px */
+  margin: 6px 16px 22px;
 }
 
 .discover__actions {
   display: flex;
+  flex: none;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 18px;
+  height: 104px;
 }
 
 .action-btn {
   display: grid;
   place-items: center;
+  width: 66px;
+  height: 66px;
+  padding: 0;
   border: none;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 4px 14px rgba(56, 41, 3, 0.15);
+  box-shadow: 0 6px 18px rgba(56, 41, 3, 0.14);
   cursor: pointer;
   transition: transform 120ms ease;
 }
@@ -41,30 +44,66 @@
 }
 
 .action-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.45;
   cursor: default;
 }
 
+.action-btn--small {
+  width: 50px;
+  height: 50px;
+  box-shadow: 0 4px 14px rgba(56, 41, 3, 0.12);
+}
+
 .action-btn--undo {
-  width: 48px;
-  height: 48px;
-  color: var(--ion-color-secondary);
+  color: var(--shire-gold);
   font-size: 22px;
 }
 
+.action-btn--info {
+  color: var(--shire-brown);
+  font: 700 20px var(--ion-font-family);
+}
+
 .action-btn--pass {
-  width: 64px;
-  height: 64px;
   color: var(--shire-red);
-  font-size: 34px;
+  font-size: 30px;
 }
 
 .action-btn--like {
-  width: 64px;
-  height: 64px;
+  width: 76px;
+  height: 76px;
   background: var(--ion-color-primary);
-  color: #fff;
-  font-size: 30px;
+  color: var(--shire-cream);
+  font-size: 32px;
+  box-shadow: 0 8px 22px rgba(17, 76, 42, 0.35);
+}
+
+.discover__empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  border: 2px dashed #d8c9b2;
+  border-radius: 28px;
+  text-align: center;
+}
+
+.discover__empty h2 {
+  margin: 0;
+  color: var(--ion-color-primary);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.discover__empty p {
+  margin: 0;
+  color: var(--shire-muted);
+  font-size: 15px;
+  line-height: 1.4;
 }
 
 .discover__state {
@@ -74,12 +113,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  padding: 24px;
   text-align: center;
-}
-
-.discover__state h2 {
-  margin: 0;
-  font-weight: 600;
 }
 
 .discover__state p {
@@ -87,35 +122,35 @@
   white-space: pre-line;
 }
 
-.filters-dot {
-  position: absolute;
-  top: 6px;
-  right: 4px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--shire-gold);
-}
-
-.discover__filters {
-  --min-height: 32px;
-}
-
-.discover__filters p {
-  margin: 0;
-  padding: 0 16px 6px;
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-.discover__filters button {
-  margin-left: 8px;
-  padding: 2px 4px;
-  border: none;
-  background: none;
+/* Botón "filters" de la cabecera, con el número de preferencias activas */
+.filters-btn {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 14px;
+  border: 1.5px solid var(--ion-color-primary);
+  border-radius: 21px;
+  background: var(--shire-cream);
   color: var(--ion-color-primary);
-  font: inherit;
-  font-weight: 600;
-  text-decoration: underline;
+  font: 600 15px var(--ion-font-family);
   cursor: pointer;
+}
+
+.filters-btn:active {
+  transform: scale(0.96);
+}
+
+.filters-btn__count {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--shire-gold);
+  color: var(--shire-on-gold);
+  font-size: 12px;
+  font-weight: 600;
 }

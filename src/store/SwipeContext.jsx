@@ -4,7 +4,7 @@ import { Preferences } from '@capacitor/preferences';
 const STORAGE_KEY = 'shire-match-state';
 
 const initialState = {
-  liked: {}, // { [id]: { dog, likedAt, requested } }
+  liked: {}, // { [id]: { dog, likedAt, requested, seen } }
   passed: [], // [id]
   lastAction: null, // { type: 'like' | 'pass', dog }
   profile: null,
@@ -52,6 +52,7 @@ export function SwipeProvider({ children }) {
             dog,
             likedAt: new Date().toISOString(),
             requested: s.liked[dog.id]?.requested ?? false,
+            seen: false, // se marca al salir de Matches
           },
         },
         passed: s.passed.filter((id) => id !== dog.id),
@@ -115,6 +116,7 @@ export function SwipeProvider({ children }) {
             dog,
             likedAt: s.liked[dog.id]?.likedAt ?? new Date().toISOString(),
             requested: true,
+            seen: true,
           },
         },
       })),
@@ -128,6 +130,18 @@ export function SwipeProvider({ children }) {
         passed: [],
         lastAction: s.lastAction?.type === 'pass' ? null : s.lastAction,
       })),
+    [update]
+  );
+
+  const markAllSeen = useCallback(
+    () =>
+      update((s) => {
+        if (!Object.values(s.liked).some((e) => e.seen === false)) return s;
+        const liked = Object.fromEntries(
+          Object.entries(s.liked).map(([id, e]) => [id, { ...e, seen: true }])
+        );
+        return { ...s, liked };
+      }),
     [update]
   );
 
@@ -155,10 +169,11 @@ export function SwipeProvider({ children }) {
       refreshDog,
       markRequested,
       resetPassed,
+      markAllSeen,
       saveProfile,
       savePreferences,
     }),
-    [state, seenIds, ready, like, pass, undo, unlike, refreshDog, markRequested, resetPassed, saveProfile, savePreferences]
+    [state, seenIds, ready, like, pass, undo, unlike, refreshDog, markRequested, resetPassed, markAllSeen, saveProfile, savePreferences]
   );
 
   return <SwipeContext.Provider value={value}>{children}</SwipeContext.Provider>;

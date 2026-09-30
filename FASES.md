@@ -149,3 +149,19 @@ Pedida después de la fase 7. Toca también backend y web (ramas `feat/dog-trait
 
 **Criterio de hecho:** al entrar por primera vez sale la pantalla de preferencias; los perros que mejor encajan salen
 primero; la historia se lee desde la tarjeta y el swipe sigue funcionando.
+
+## Fase 9 — rediseño (Claude Design)
+
+Diseño "Shire of Paws mobile redesign" de Claude Design. Toca también backend y web (ramas `feat/dog-photos`).
+
+1. Backend y web: `extraPhotoUrls` (hasta 2 fotos más por perro), subida y borrado en el admin, galería en la ficha.
+2. App: cabeceras con "THE SHIRE OF PAWS", pestañas en píldora con punto rojo si hay matches nuevos.
+3. Discover: tarjeta a sangre con galería (barritas, tap izquierda/derecha), sellos "ADOPT ME" / "NOT NOW",
+   botones deshacer / pasar / like / info, botón "filters" con el número de preferencias (sin filtros duros).
+4. Preferencias en hoja con "reset" y "show me dogs · N great matches".
+5. Perfil en hoja (desde Discover y Matches) con datos, personalidad, historia y refugio; "not now" / "I'd love to meet",
+   "request adoption" si ya hay match. La ruta /dog/:id muestra lo mismo como página.
+6. Match: "IT'S A MATCH", "{name} wants to meet you too", "request adoption" / "keep discovering" / "see my matches".
+7. Matches: fila "new" con anillos, tarjetas con "say hi" / "contact" / "view", "{n} dogs" en la cabecera.
+
+**Criterio de hecho:** la app se ve como el diseño y el flujo like → match → solicitud sigue funcionando.
