@@ -14,6 +14,7 @@ import {
 } from '@ionic/react';
 import { heart, heartOutline } from 'ionicons/icons';
 
+import AdoptionForm from '../components/AdoptionForm';
 import { getById } from '../services/dogService';
 import { getErrorMessage } from '../services/api';
 import { useSwipe } from '../store/SwipeContext';
@@ -29,7 +30,7 @@ import './DogProfile.css';
 export default function DogProfile() {
   const { id } = useParams();
   const location = useLocation();
-  const { liked, like, unlike, refreshDog } = useSwipe();
+  const { ready, liked, like, unlike, refreshDog } = useSwipe();
 
   // Mientras carga getById, se muestra lo que ya tenemos
   const [dog, setDog] = useState(() =>
@@ -61,11 +62,12 @@ export default function DogProfile() {
   const canAdopt = available && !requested;
 
   useEffect(() => {
-    if (wantsAdopt.current && dog && canAdopt) {
+    // Esperar a Preferences para saber si ya se envió solicitud
+    if (wantsAdopt.current && ready && dog && canAdopt) {
       wantsAdopt.current = false;
       setFormOpen(true);
     }
-  }, [dog, canAdopt]);
+  }, [ready, dog, canAdopt]);
 
   function toggleLike() {
     if (isLiked) unlike(id);
@@ -118,7 +120,7 @@ export default function DogProfile() {
   }
 
   let footer = null;
-  if (dog) {
+  if (dog && ready) {
     if (requested) {
       footer = <p className="dog-profile__notice">You've already sent a request</p>;
     } else if (!available) {
@@ -165,7 +167,7 @@ export default function DogProfile() {
         </IonFooter>
       )}
 
-      {/* Fase 4: <AdoptionForm isOpen={formOpen} onClose={() => setFormOpen(false)} dog={dog} /> */}
+      {dog && <AdoptionForm dog={dog} isOpen={formOpen} onClose={() => setFormOpen(false)} />}
     </IonPage>
   );
 }

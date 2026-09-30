@@ -1,0 +1,16 @@
+.adoption-form__form {
+  padding-bottom: 16px;
+}
+
+.adoption-form__intro {
+  margin: 16px 20px 0;
+}
+
+.adoption-form ion-list {
+  --ion-item-background: #fff;
+}
+
+.adoption-form__footer ion-toolbar {
+  --background: var(--ion-background-color);
+  padding: 8px 16px;
+}

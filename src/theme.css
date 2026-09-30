@@ -59,3 +59,8 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Toasts con varias líneas (errores con details) */
+ion-toast::part(message) {
+  white-space: pre-line;
+}
