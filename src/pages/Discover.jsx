@@ -12,6 +12,7 @@ import {
 } from '@ionic/react';
 import { arrowUndo, close, heart } from 'ionicons/icons';
 
+import MatchModal from '../components/MatchModal';
 import SwipeCard from '../components/SwipeCard';
 import { getAvailable } from '../services/dogService';
 import { getErrorMessage } from '../services/api';
@@ -29,6 +30,8 @@ export default function Discover() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState(null);
+  const [matchDog, setMatchDog] = useState(null);
+  const [matchOpen, setMatchOpen] = useState(false);
 
   const pageRef = useRef(0);
   const loadingRef = useRef(false);
@@ -81,8 +84,13 @@ export default function Discover() {
 
   const handleSwiped = useCallback(
     (dog, dir) => {
-      if (dir === 'right') like(dog);
-      else pass(dog);
+      if (dir === 'right') {
+        like(dog);
+        setMatchDog(dog);
+        setMatchOpen(true);
+      } else {
+        pass(dog);
+      }
       setDeck((prev) => prev.filter((d) => d.id !== dog.id));
     },
     [like, pass]
@@ -92,6 +100,11 @@ export default function Discover() {
     (dog) => history.push(`/dog/${dog.id}`, { dog }),
     [history]
   );
+
+  function handleRequest() {
+    setMatchOpen(false);
+    history.push(`/dog/${matchDog.id}?adopt=1`, { dog: matchDog });
+  }
 
   function handleUndo() {
     const dog = undo();
@@ -192,6 +205,12 @@ export default function Discover() {
       </IonHeader>
       <IonContent scrollY={false}>
         <div className="discover">{body}</div>
+        <MatchModal
+          dog={matchDog}
+          isOpen={matchOpen}
+          onRequest={handleRequest}
+          onClose={() => setMatchOpen(false)}
+        />
       </IonContent>
     </IonPage>
   );
