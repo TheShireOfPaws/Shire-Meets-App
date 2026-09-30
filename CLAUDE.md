@@ -43,7 +43,7 @@ Colores y fuente de la web (`src/styles/variables.css` del frontend):
 - crema `#FAF6F2` (fondo) · verde `#114C2A` (primario) · dorado `#B8860B` (secundario) · marrón `#382903` (texto)
 - Fuente **Fredoka** (Google Fonts)
 - Las tarjetas alternan dorado / verde / marrón como las `DogCard` de la web
-- Textos de la interfaz en **español**, tono cercano, frases cortas, sin mayúsculas en etiquetas
+- Textos de la interfaz siempre en **inglés**, tono cercano, frases cortas, sin mayúsculas en etiquetas (los comentarios del código siguen en español)
 - Respetar `prefers-reduced-motion`, foco visible, `aria-label` en botones solo con icono
 
 ## Estructura objetivo

@@ -5,11 +5,11 @@ export default function Discover() {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Descubrir</IonTitle>
+          <IonTitle>Discover</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <p>Aquí saldrán los perros para hacer swipe.</p>
+        <p>Dogs to swipe will show up here.</p>
       </IonContent>
     </IonPage>
   );

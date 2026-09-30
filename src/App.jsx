@@ -36,7 +36,7 @@ export default function App() {
           <IonTabBar slot="bottom">
             <IonTabButton tab="discover" href="/discover">
               <IonIcon aria-hidden="true" icon={paw} />
-              <IonLabel>Descubrir</IonLabel>
+              <IonLabel>Discover</IonLabel>
             </IonTabButton>
             <IonTabButton tab="matches" href="/matches">
               <IonIcon aria-hidden="true" icon={heart} />

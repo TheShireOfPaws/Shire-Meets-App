@@ -9,7 +9,7 @@ export default function Matches() {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <p>Aquí verás los perros que te han gustado.</p>
+        <p>The dogs you like will show up here.</p>
       </IonContent>
     </IonPage>
   );

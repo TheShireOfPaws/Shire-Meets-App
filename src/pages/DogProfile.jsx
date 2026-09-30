@@ -17,13 +17,13 @@ export default function DogProfile() {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/matches" text="volver" />
+            <IonBackButton defaultHref="/matches" text="back" />
           </IonButtons>
-          <IonTitle>Perfil</IonTitle>
+          <IonTitle>Profile</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <p>Perfil del perro {id}.</p>
+        <p>Dog profile {id}.</p>
       </IonContent>
     </IonPage>
   );

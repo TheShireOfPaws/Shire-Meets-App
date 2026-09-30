@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import { SwipeProvider } from './store/SwipeContext';
 
 // CSS base de Ionic
 import '@ionic/react/css/core.css';
@@ -15,6 +16,8 @@ import './theme.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <SwipeProvider>
+      <App />
+    </SwipeProvider>
   </React.StrictMode>
 );
