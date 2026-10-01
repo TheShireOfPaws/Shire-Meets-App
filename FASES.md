@@ -1,4 +1,4 @@
-# Fases — Shire Match
+# Fases — Shire Meets
 
 Cada fase se pide por separado. Lee `CLAUDE.md` antes de empezar.
 

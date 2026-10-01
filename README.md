@@ -1,4 +1,4 @@
-# Shire Match
+# Shire Meets
 
 A Tinder-style mobile app for adopting dogs from **The Shire of Paws**.
 Swipe right on the dogs you like, get a match, and send the shelter an adoption request straight from your phone.
@@ -97,7 +97,7 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 1. On the phone: enable **Developer options → USB debugging** and accept the prompt when you plug it in.
 2. `adb devices` should list it as `device`.
 3. With the backend running on your PC: `adb reverse tcp:8080 tcp:8080` (repeat it after reconnecting the cable).
-4. Install the APK as above and open **Shire Match**.
+4. Install the APK as above and open **Shire Meets**.
 
 ### Debug-only cleartext
 
