@@ -59,11 +59,6 @@
   font-size: 22px;
 }
 
-.action-btn--info {
-  color: var(--shire-brown);
-  font: 700 20px var(--ion-font-family);
-}
-
 .action-btn--pass {
   color: var(--shire-red);
   font-size: 30px;

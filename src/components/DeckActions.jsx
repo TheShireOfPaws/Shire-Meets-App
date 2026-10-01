@@ -1,7 +1,7 @@
 import { IonIcon } from '@ionic/react';
 import { arrowUndo, close, heart } from 'ionicons/icons';
 
-export default function DeckActions({ topDog, canUndo, onUndo, onSwipe, onInfo }) {
+export default function DeckActions({ canUndo, onUndo, onSwipe }) {
   return (
     <div className="discover__actions">
       <button
@@ -28,14 +28,6 @@ export default function DeckActions({ topDog, canUndo, onUndo, onSwipe, onInfo }
         onClick={() => onSwipe('right')}
       >
         <IonIcon icon={heart} aria-hidden="true" />
-      </button>
-      <button
-        type="button"
-        className="action-btn action-btn--small action-btn--info"
-        aria-label={`more about ${topDog?.name ?? 'this dog'}`}
-        onClick={() => topDog && onInfo(topDog)}
-      >
-        i
       </button>
     </div>
   );
