@@ -1,4 +1,3 @@
-/* Colores de la marca (los mismos que la web) */
 :root {
   --shire-cream: #faf6f2;
   --shire-green: #114c2a;
@@ -6,11 +5,10 @@
   --shire-brown: #382903;
   --shire-red: #c0392b;
 
-  /* Rediseño (Claude Design) */
   --shire-sand: #efe6da;
   --shire-soft: #f2eadf;
   --shire-line: #eee4d6;
-  --shire-muted: #6b5a3a; /* texto secundario, 6.2:1 sobre crema */
+  --shire-muted: #6b5a3a;
   --shire-hint: #7a6a4a; /* el #8a7a5a del diseño se queda en 3.9:1 */
   --shire-gold-light: #e8c46a;
   --shire-mint: #cfe0d4;
@@ -19,7 +17,6 @@
 
   --ion-font-family: 'Fredoka', system-ui, sans-serif;
 
-  /* primary: verde */
   --ion-color-primary: #114c2a;
   --ion-color-primary-rgb: 17, 76, 42;
   --ion-color-primary-contrast: #ffffff;
@@ -27,7 +24,6 @@
   --ion-color-primary-shade: #0f4325;
   --ion-color-primary-tint: #295e3f;
 
-  /* secondary: dorado */
   --ion-color-secondary: #b8860b;
   --ion-color-secondary-rgb: 184, 134, 11;
   /* Texto oscuro sobre dorado: el blanco solo llega a 3.25:1 */
@@ -36,7 +32,6 @@
   --ion-color-secondary-shade: #a2760a;
   --ion-color-secondary-tint: #bf9223;
 
-  /* tertiary: marrón */
   --ion-color-tertiary: #382903;
   --ion-color-tertiary-rgb: 56, 41, 3;
   --ion-color-tertiary-contrast: #ffffff;
@@ -44,7 +39,6 @@
   --ion-color-tertiary-shade: #312403;
   --ion-color-tertiary-tint: #4c3e1c;
 
-  /* Fondo crema y texto marrón */
   --ion-background-color: #faf6f2;
   --ion-background-color-rgb: 250, 246, 242;
   --ion-text-color: #382903;
@@ -57,7 +51,6 @@
   --ion-tab-bar-color-selected: #faf6f2;
 }
 
-/* Foco visible con teclado (verde sobre crema; dorado sobre fondos verdes) */
 :root {
   --focus-ring: var(--ion-color-primary);
 }
@@ -81,15 +74,11 @@
   }
 }
 
-/* Toasts con varias líneas (errores con details) */
 ion-toast::part(message) {
   white-space: pre-line;
 }
 
-/*
- * Status bar verde en Android 15+: la app ocupa toda la pantalla y la barra es transparente.
- * Capacitor inyecta --safe-area-inset-* (también en WebViews antiguas donde env() da 0).
- */
+/* Android 15+ dibuja bajo la status bar: Capacitor inyecta --safe-area-inset-* (env() da 0 en WebViews antiguas) */
 :root {
   --ion-safe-area-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
   --ion-safe-area-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
@@ -109,7 +98,6 @@ ion-app::after {
   pointer-events: none;
 }
 
-/* ---------- Cabecera de página: antetítulo + título grande ---------- */
 .page-header ion-toolbar {
   --min-height: 56px;
   --padding-top: 4px;
@@ -147,7 +135,6 @@ ion-app::after {
   font-weight: 700;
 }
 
-/* ---------- Pestañas en forma de píldora ---------- */
 /* ion-tab-bar lleva contain: strict, así que height: auto daría 0: altura explícita */
 ion-tab-bar {
   --border: 0;
@@ -177,7 +164,6 @@ ion-tab-button ion-label {
   font-weight: 600;
 }
 
-/* Hueco de 8px entre icono y texto, como en el diseño */
 ion-tab-button ion-icon {
   margin: 0 8px 0 0;
   font-size: 22px;
@@ -187,7 +173,6 @@ ion-tab-button.tab-selected {
   background: var(--ion-color-primary);
 }
 
-/* Punto rojo: hay matches nuevos sin ver */
 .tab-dot {
   position: absolute;
   top: 12px;
@@ -209,7 +194,6 @@ ion-tab-button.tab-selected {
   white-space: nowrap;
 }
 
-/* ---------- Botones grandes del rediseño ---------- */
 /* Sin flex por defecto: en columnas, flex: 1 anulaba la altura y el botón quedaba finito */
 .btn {
   flex: none;
@@ -227,7 +211,6 @@ ion-tab-button.tab-selected {
   transform: scale(0.98);
 }
 
-/* En filas de botones ("not now" + "I'd love to meet"): mismo reparto que el diseño, 1 : 1.4 */
 .btn-row {
   display: flex;
   gap: 10px;
@@ -268,7 +251,6 @@ ion-tab-button.tab-selected {
   color: var(--shire-cream);
 }
 
-/* ---------- Hojas desde abajo (perfil y preferencias) ---------- */
 .sheet-modal {
   --background: var(--shire-cream);
   --border-radius: 30px;

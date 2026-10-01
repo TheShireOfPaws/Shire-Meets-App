@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { IonModal } from '@ionic/react';
 import DogDetail from './DogDetail';
 
-// Perfil en hoja desde abajo (94 % de alto). dog = null la cierra.
+// dog = null cierra la hoja
 export default function DogSheet({ dog, autoAdopt = false, onClose, onLike, onPass }) {
-  // Se conserva el último perro para que no se vacíe mientras la hoja baja
+  // Último perro mostrado: evita que la hoja se vacíe mientras baja
   const [shown, setShown] = useState(dog);
   useEffect(() => {
     if (dog) setShown(dog);

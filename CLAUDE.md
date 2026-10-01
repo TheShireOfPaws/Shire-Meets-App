@@ -53,9 +53,11 @@ Colores y fuente de la web (`src/styles/variables.css` del frontend):
 src/
   App.jsx  main.jsx  theme.css
   services/  api.js  dogService.js  adoptionService.js
-  store/     SwipeContext.jsx
-  utils/     labels.js  matching.js
-  components/ SwipeCard  MatchModal  AdoptionForm  DogDetail  DogSheet  PageHeader  PillGroup  PreferencesModal
+  store/     SwipeContext.jsx (provider + persistencia)  swipeState.js (transiciones puras)
+  hooks/     useDogDeck.js  useRefreshMatches.js
+  utils/     labels.js  dog.js  matching.js  adoptionForm.js
+  components/ SwipeCard  DeckActions  FiltersButton  MatchModal  MatchRow  NewMatchesRow
+              AdoptionForm  DogDetail  DogDetailActions  PhotoCarousel  DogSheet  PageHeader  PillGroup  PreferencesModal
   pages/     Discover  Matches  DogProfile
 ```
 

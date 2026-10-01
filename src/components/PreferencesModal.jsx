@@ -19,8 +19,7 @@ const GENDER_OPTIONS = [
 ];
 const HOUSING_OPTIONS = [['', 'rather not say'], ...Object.entries(HOUSING_LABELS)];
 
-// Hoja de preferencias (92 % de alto). firstTime: bienvenida, solo se cierra eligiendo o saltando.
-// candidates: perros por ver, para contar cuántos "great match" saldrían con el borrador.
+// candidates: perros por ver, para contar los "great match" del borrador
 export default function PreferencesModal({
   isOpen,
   firstTime,
@@ -45,7 +44,7 @@ export default function PreferencesModal({
       breakpoints={[0, 0.92]}
       initialBreakpoint={0.92}
       handle={!firstTime}
-      // La primera vez hay que elegir o saltar: no se cierra deslizando ni tocando fuera
+      // La primera vez solo se cierra eligiendo o saltando
       canDismiss={firstTime ? (data, role) => role !== 'gesture' && role !== 'backdrop' : true}
       className="sheet-modal preferences-modal"
     >

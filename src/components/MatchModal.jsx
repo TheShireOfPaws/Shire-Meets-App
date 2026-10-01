@@ -1,5 +1,5 @@
 import { IonModal } from '@ionic/react';
-import { dogPhotos, showPlaceholder } from '../utils/labels';
+import { dogPhotos, showPlaceholder } from '../utils/dog';
 import './MatchModal.css';
 
 export default function MatchModal({ dog, isOpen, onRequest, onClose, onSeeMatches }) {

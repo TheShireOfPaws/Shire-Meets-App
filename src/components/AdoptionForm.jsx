@@ -6,8 +6,8 @@ import {
   IonFooter,
   IonHeader,
   IonInput,
-  IonList,
   IonItem,
+  IonList,
   IonModal,
   IonSelect,
   IonSelectOption,
@@ -20,125 +20,51 @@ import {
 import { create } from '../services/adoptionService';
 import { getErrorMessage } from '../services/api';
 import { useSwipe } from '../store/SwipeContext';
+import { EMPTY_FORM, FORM_FIELDS, initialValues, toRequest, validate } from '../utils/adoptionForm';
 import { HOUSING_LABELS } from '../utils/labels';
 import './AdoptionForm.css';
-
-const FIELDS = [
-  'requesterFirstName',
-  'requesterLastName',
-  'requesterEmail',
-  'housingType',
-  'householdSize',
-  'daytimeLocation',
-  'motivation',
-];
-
-const EMPTY = {
-  requesterFirstName: '',
-  requesterLastName: '',
-  requesterEmail: '',
-  housingType: '',
-  householdSize: '',
-  daytimeLocation: '',
-  motivation: '',
-};
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-// Mismas reglas que AdoptionRequestRequest en el backend
-function validate(v) {
-  const errors = {};
-  const name = (value, label) => {
-    const t = value.trim();
-    if (!t) return `Tell us your ${label}.`;
-    if (t.length < 2 || t.length > 50) return 'Between 2 and 50 characters.';
-    return null;
-  };
-
-  const first = name(v.requesterFirstName, 'first name');
-  if (first) errors.requesterFirstName = first;
-  const last = name(v.requesterLastName, 'last name');
-  if (last) errors.requesterLastName = last;
-
-  const email = v.requesterEmail.trim();
-  if (!email) errors.requesterEmail = 'Tell us your email.';
-  else if (!EMAIL_RE.test(email)) errors.requesterEmail = "That email doesn't look right.";
-
-  if (!v.housingType) errors.housingType = 'Choose your type of home.';
-
-  const size = Number(v.householdSize);
-  if (v.householdSize === '' || v.householdSize == null) {
-    errors.householdSize = 'How many people live with you?';
-  } else if (!Number.isInteger(size) || size < 1 || size > 20) {
-    errors.householdSize = 'A whole number from 1 to 20.';
-  }
-
-  if (v.daytimeLocation.trim().length > 1000) errors.daytimeLocation = 'Up to 1000 characters.';
-
-  const motivation = v.motivation.trim().length;
-  if (motivation === 0) errors.motivation = 'Tell the shelter why.';
-  else if (motivation < 50) errors.motivation = `At least 50 characters (${50 - motivation} to go).`;
-  else if (motivation > 2000) errors.motivation = 'Up to 2000 characters.';
-
-  return errors;
-}
 
 export default function AdoptionForm({ dog, isOpen, onClose }) {
   const { profile, preferences, saveProfile, markRequested } = useSwipe();
   const [presentToast] = useIonToast();
 
-  const [values, setValues] = useState(EMPTY);
+  const [values, setValues] = useState(EMPTY_FORM);
   const [touched, setTouched] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
   const errors = validate(values);
 
-  // Al abrir: datos guardados del adoptante, motivación siempre vacía
   useEffect(() => {
     if (!isOpen) return;
-    setValues({
-      ...EMPTY,
-      // Si aún no hay perfil, el tipo de casa sale de las preferencias
-      housingType: preferences?.housing ?? '',
-      ...Object.fromEntries(
-        Object.entries(profile ?? {})
-          .filter(([key, value]) => key in EMPTY && value != null)
-          .map(([key, value]) => [key, String(value)])
-      ),
-      motivation: '',
-    });
+    setValues(initialValues(profile, preferences));
     setTouched({});
     setSubmitting(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const set = (field) => (e) => setValues((v) => ({ ...v, [field]: e.detail.value ?? '' }));
-  const touch = (field) => () => setTouched((t) => ({ ...t, [field]: true }));
+  const setValue = (field, value) => setValues((v) => ({ ...v, [field]: value ?? '' }));
+  const touch = (field) => setTouched((t) => ({ ...t, [field]: true }));
 
   // Ionic muestra errorText solo con ion-invalid + ion-touched
-  const stateClass = (field) =>
-    touched[field] ? `ion-touched ${errors[field] ? 'ion-invalid' : 'ion-valid'}` : '';
+  const field = (name) => ({
+    value: values[name],
+    onIonInput: (e) => setValue(name, e.detail.value),
+    onIonBlur: () => touch(name),
+    className: touched[name] ? `ion-touched ${errors[name] ? 'ion-invalid' : 'ion-valid'}` : '',
+    errorText: errors[name],
+    labelPlacement: 'stacked',
+  });
 
   async function handleSubmit(e) {
     e?.preventDefault();
     if (submitting) return;
 
     if (Object.keys(errors).length > 0) {
-      setTouched(Object.fromEntries(FIELDS.map((f) => [f, true])));
+      setTouched(Object.fromEntries(FORM_FIELDS.map((f) => [f, true])));
       return;
     }
 
-    const request = {
-      requesterFirstName: values.requesterFirstName.trim(),
-      requesterLastName: values.requesterLastName.trim(),
-      requesterEmail: values.requesterEmail.trim(),
-      housingType: values.housingType,
-      householdSize: Number(values.householdSize),
-      daytimeLocation: values.daytimeLocation.trim() || null,
-      motivation: values.motivation.trim(),
-      dogId: dog.id,
-    };
-
+    const request = toRequest(values, dog.id);
     setSubmitting(true);
     try {
       await create(request);
@@ -153,23 +79,14 @@ export default function AdoptionForm({ dog, isOpen, onClose }) {
       });
       onClose();
     } catch (err) {
-      presentToast({
-        message: getErrorMessage(err),
-        color: 'danger',
-        duration: 5000,
-        position: 'top',
-      });
+      presentToast({ message: getErrorMessage(err), color: 'danger', duration: 5000, position: 'top' });
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <IonModal
-      isOpen={isOpen}
-      onDidDismiss={onClose}
-      className="adoption-form"
-    >
+    <IonModal isOpen={isOpen} onDidDismiss={onClose} className="adoption-form">
       <IonHeader>
         <IonToolbar>
           <IonTitle>Adopt {dog?.name}</IonTitle>
@@ -190,44 +107,29 @@ export default function AdoptionForm({ dog, isOpen, onClose }) {
           <IonList inset>
             <IonItem>
               <IonInput
+                {...field('requesterFirstName')}
                 label="first name"
-                labelPlacement="stacked"
                 autocomplete="given-name"
-                value={values.requesterFirstName}
-                onIonInput={set('requesterFirstName')}
-                onIonBlur={touch('requesterFirstName')}
-                className={stateClass('requesterFirstName')}
-                errorText={errors.requesterFirstName}
                 maxlength={50}
                 required
               />
             </IonItem>
             <IonItem>
               <IonInput
+                {...field('requesterLastName')}
                 label="last name"
-                labelPlacement="stacked"
                 autocomplete="family-name"
-                value={values.requesterLastName}
-                onIonInput={set('requesterLastName')}
-                onIonBlur={touch('requesterLastName')}
-                className={stateClass('requesterLastName')}
-                errorText={errors.requesterLastName}
                 maxlength={50}
                 required
               />
             </IonItem>
             <IonItem>
               <IonInput
+                {...field('requesterEmail')}
                 label="email"
-                labelPlacement="stacked"
                 type="email"
                 inputmode="email"
                 autocomplete="email"
-                value={values.requesterEmail}
-                onIonInput={set('requesterEmail')}
-                onIonBlur={touch('requesterEmail')}
-                className={stateClass('requesterEmail')}
-                errorText={errors.requesterEmail}
                 required
               />
             </IonItem>
@@ -236,19 +138,17 @@ export default function AdoptionForm({ dog, isOpen, onClose }) {
           <IonList inset>
             <IonItem>
               <IonSelect
+                {...field('housingType')}
                 label="type of home"
-                labelPlacement="stacked"
                 interface="action-sheet"
                 placeholder="choose one"
                 cancelText="cancel"
                 value={values.housingType || undefined}
                 onIonChange={(e) => {
-                  setValues((v) => ({ ...v, housingType: e.detail.value ?? '' }));
-                  touch('housingType')();
+                  setValue('housingType', e.detail.value);
+                  touch('housingType');
                 }}
-                onIonDismiss={touch('housingType')}
-                className={stateClass('housingType')}
-                errorText={errors.housingType}
+                onIonDismiss={() => touch('housingType')}
               >
                 {Object.entries(HOUSING_LABELS).map(([value, label]) => (
                   <IonSelectOption key={value} value={value}>
@@ -259,32 +159,22 @@ export default function AdoptionForm({ dog, isOpen, onClose }) {
             </IonItem>
             <IonItem>
               <IonInput
+                {...field('householdSize')}
                 label="people at home (you included)"
-                labelPlacement="stacked"
                 type="number"
                 inputmode="numeric"
                 min={1}
                 max={20}
-                value={values.householdSize}
-                onIonInput={set('householdSize')}
-                onIonBlur={touch('householdSize')}
-                className={stateClass('householdSize')}
-                errorText={errors.householdSize}
                 required
               />
             </IonItem>
             <IonItem>
               <IonTextarea
+                {...field('daytimeLocation')}
                 label={`where will ${dog?.name ?? 'they'} spend the day? (optional)`}
-                labelPlacement="stacked"
                 autoGrow
                 rows={2}
                 maxlength={1000}
-                value={values.daytimeLocation}
-                onIonInput={set('daytimeLocation')}
-                onIonBlur={touch('daytimeLocation')}
-                className={stateClass('daytimeLocation')}
-                errorText={errors.daytimeLocation}
               />
             </IonItem>
           </IonList>
@@ -292,16 +182,11 @@ export default function AdoptionForm({ dog, isOpen, onClose }) {
           <IonList inset>
             <IonItem>
               <IonTextarea
+                {...field('motivation')}
                 label={`why do you want to adopt ${dog?.name ?? 'this dog'}?`}
-                labelPlacement="stacked"
                 autoGrow
                 rows={5}
                 maxlength={2000}
-                value={values.motivation}
-                onIonInput={set('motivation')}
-                onIonBlur={touch('motivation')}
-                className={stateClass('motivation')}
-                errorText={errors.motivation}
                 counter
                 counterFormatter={(length, max) => `${length}/${max} · minimum 50`}
                 required

@@ -7,7 +7,6 @@ const api = axios.create({
 
 export default api;
 
-// Mensaje legible a partir de un error de axios (formato de GlobalExceptionHandler)
 export function getErrorMessage(err) {
   if (err?.code === 'ECONNABORTED' || err?.code === 'ETIMEDOUT') {
     return 'The server is taking too long. Try again in a moment.';

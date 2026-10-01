@@ -8,13 +8,12 @@ import { getErrorMessage } from '../services/api';
 import { useSwipe } from '../store/SwipeContext';
 import './DogProfile.css';
 
-// /dog/:id — el mismo perfil que la hoja, como página (enlaces directos y ?adopt=1)
 export default function DogProfile() {
   const { id } = useParams();
   const location = useLocation();
   const { liked, refreshDog } = useSwipe();
 
-  // Mientras carga getById, se muestra lo que ya tenemos
+  // Mientras carga, lo que ya tenemos
   const [dog, setDog] = useState(() =>
     location.state?.dog?.id === id ? location.state.dog : liked[id]?.dog ?? null
   );

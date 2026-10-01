@@ -18,7 +18,6 @@ import Matches from './pages/Matches';
 import DogProfile from './pages/DogProfile';
 import { useSwipe } from './store/SwipeContext';
 
-// Mismo aspecto en Android e iOS; sin transiciones de Ionic si se pide reducir movimiento
 setupIonicReact({
   mode: 'ios',
   animated: !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
@@ -36,11 +35,10 @@ function SeenTracker() {
   return null;
 }
 
-// Contenido de la pestaña Matches, con punto rojo si hay nuevos sin ver (y no estás en ella)
 function MatchesTab() {
   const { pathname } = useLocation();
   const { liked } = useSwipe();
-  // Los guardados antes del rediseño no tienen seen: cuentan como vistos
+  // Sin seen (guardados antes del rediseño) cuentan como vistos
   const showDot =
     pathname !== '/matches' && Object.values(liked).some((entry) => entry.seen === false);
   return (

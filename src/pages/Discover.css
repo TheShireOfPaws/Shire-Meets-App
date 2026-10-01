@@ -10,9 +10,9 @@
   position: relative;
   flex: 1;
   min-height: 0;
-  /* En tablet vertical la tarjeta quedaría demasiado alta */
+
   max-height: 680px;
-  /* Hueco abajo para las tarjetas de detrás, que asoman 28px */
+
   margin: 6px 16px 22px;
 }
 
@@ -122,7 +122,6 @@
   white-space: pre-line;
 }
 
-/* Botón "filters" de la cabecera, con el número de preferencias activas */
 .filters-btn {
   display: flex;
   flex: none;

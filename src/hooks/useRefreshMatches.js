@@ -1,0 +1,29 @@
+import { useCallback, useEffect, useRef } from 'react';
+import { useIonViewWillEnter } from '@ionic/react';
+import { getById } from '../services/dogService';
+
+// Trae el estado actual de cada perro guardado; si alguno falla, se queda lo que había
+export default function useRefreshMatches({ ready, liked, refreshDog }) {
+  const likedRef = useRef(liked);
+  likedRef.current = liked;
+
+  const refresh = useCallback(async () => {
+    const results = await Promise.allSettled(Object.keys(likedRef.current).map(getById));
+    results.forEach((r) => {
+      if (r.status === 'fulfilled') refreshDog(r.value);
+    });
+  }, [refreshDog]);
+
+  useIonViewWillEnter(() => {
+    if (ready) refresh();
+  }, [ready, refresh]);
+
+  // Entrada directa en /matches: refrescar cuando Preferences termine de cargar
+  const wasReady = useRef(ready);
+  useEffect(() => {
+    if (ready && !wasReady.current) refresh();
+    wasReady.current = ready;
+  }, [ready, refresh]);
+
+  return refresh;
+}

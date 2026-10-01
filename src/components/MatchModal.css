@@ -3,7 +3,7 @@
   --height: 100%;
   --border-radius: 0;
   --background: var(--ion-color-primary);
-  /* Foco visible en dorado sobre el verde */
+
   --focus-ring: var(--shire-gold);
 }
 

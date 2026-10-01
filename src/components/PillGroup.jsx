@@ -1,6 +1,6 @@
 import './PillGroup.css';
 
-// Grupo de pastillas: radios (value: string) o casillas si multiple (value: array)
+// value: string (radios) o array si multiple (casillas)
 export default function PillGroup({ id, label, hint, options, value, onChange, multiple = false }) {
   const isChecked = (optionValue) =>
     multiple ? value.includes(optionValue) : value === optionValue;

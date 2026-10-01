@@ -31,7 +31,6 @@
   padding: 0 4px;
 }
 
-/* ---------- Fila "new": anillos dorados ---------- */
 .matches__rings {
   display: flex;
   gap: 16px;
@@ -98,7 +97,6 @@
   white-space: nowrap;
 }
 
-/* ---------- Lista: tarjetas blancas ---------- */
 .matches__list {
   --ion-item-background: transparent;
   display: flex;
@@ -198,7 +196,6 @@
   color: var(--shire-cream);
 }
 
-/* ---------- Vacío ---------- */
 .matches__empty {
   display: flex;
   flex-direction: column;
@@ -222,7 +219,6 @@
   line-height: 1.4;
 }
 
-/* Oculto hasta que recibe el foco con teclado */
 .matches__remove-a11y {
   position: absolute;
   top: 50%;

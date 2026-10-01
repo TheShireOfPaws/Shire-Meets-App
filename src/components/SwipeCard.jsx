@@ -1,11 +1,12 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { createGesture } from '@ionic/react';
-import { TRAIT_LABELS, dogPhotos, genderSize, showPlaceholder } from '../utils/labels';
+import { ageLabel } from '../utils/labels';
+import { dogPhotos, genderSize, showPlaceholder, traitLabels } from '../utils/dog';
 import './SwipeCard.css';
 
-const SWIPE_RATIO = 0.28; // % del ancho para que cuente como swipe
+const SWIPE_RATIO = 0.28; // fracción del ancho
 const SWIPE_VELOCITY = 0.45;
-const TAP_MAX = 6; // px: por debajo es un tap
+const TAP_MAX = 6; // px
 const MAX_ROTATION = 15;
 const FLY_MS = 300;
 
@@ -62,7 +63,6 @@ const SwipeCard = forwardRef(function SwipeCard(
 
   function snapBack() {
     const el = cardRef.current;
-    // Pequeño rebote al volver al centro
     el.style.transition = prefersReducedMotion()
       ? 'none'
       : 'transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1)';
@@ -80,7 +80,6 @@ const SwipeCard = forwardRef(function SwipeCard(
       el,
       gestureName: 'swipe-card',
       threshold: 0,
-      // El botón de info no arrastra la tarjeta
       canStart: (d) => !d.event.target.closest?.('[data-no-swipe]'),
       onMove: (d) => {
         if (!leavingRef.current) drag(d.deltaX, d.deltaY);
@@ -112,7 +111,6 @@ const SwipeCard = forwardRef(function SwipeCard(
   }, [isTop, dog]);
 
   function handleKeyDown(e) {
-    // Solo con el foco en la propia tarjeta (no en el botón de info)
     if (e.target !== e.currentTarget) return;
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -125,9 +123,9 @@ const SwipeCard = forwardRef(function SwipeCard(
   }
 
   const meta = genderSize(dog);
-  const traits = (dog.traits ?? []).map((t) => TRAIT_LABELS[t]).filter(Boolean);
+  const traits = traitLabels(dog);
   const label = [
-    `${dog.name}, ${dog.age} ${dog.age === 1 ? 'year' : 'years'}`,
+    `${dog.name}, ${ageLabel(dog.age)}`,
     greatMatch && 'great match',
     meta,
     traits.join(', '),
@@ -167,7 +165,6 @@ const SwipeCard = forwardRef(function SwipeCard(
         </div>
       )}
 
-      {/* Sellos en mayúsculas como en el diseño (excepción a las etiquetas en minúscula) */}
       <span ref={likeRef} className="swipe-card__stamp swipe-card__stamp--like" aria-hidden="true">
         ADOPT ME
       </span>

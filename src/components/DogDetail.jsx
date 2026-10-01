@@ -1,36 +1,33 @@
 import { useEffect, useRef, useState } from 'react';
-import { IonContent, IonFooter, IonIcon, IonToolbar, useIonRouter } from '@ionic/react';
+import { IonContent, IonIcon, useIonRouter } from '@ionic/react';
 import { arrowBack, chevronDown, homeOutline } from 'ionicons/icons';
 
 import AdoptionForm from './AdoptionForm';
+import DogDetailActions from './DogDetailActions';
+import PhotoCarousel from './PhotoCarousel';
 import { useSwipe } from '../store/SwipeContext';
-import {
-  GENDER_LABELS,
-  SIZE_LABELS,
-  STATUS_LABELS,
-  TRAIT_LABELS,
-  ageLabel,
-  dogPhotos,
-  showPlaceholder,
-} from '../utils/labels';
+import { GENDER_LABELS, SIZE_LABELS, STATUS_LABELS, ageLabel } from '../utils/labels';
+import { dogPhotos, traitLabels } from '../utils/dog';
 import { isGreatMatch } from '../utils/matching';
 import './DogDetail.css';
 
-// Perfil del perro. variant: 'sheet' (hoja desde Discover/Matches) o 'page' (/dog/:id)
-// onLike / onPass: opcionales; si faltan se usan las acciones del contexto
+// variant: 'sheet' (hoja desde Discover/Matches) o 'page' (/dog/:id).
+// Sin onLike / onPass se usan las acciones del contexto.
 export default function DogDetail({ dog, variant = 'sheet', autoAdopt = false, onClose, onLike, onPass }) {
   const router = useIonRouter();
   const { ready, liked, passed, preferences, like, pass } = useSwipe();
-  const [photo, setPhoto] = useState(0);
   const [formOpen, setFormOpen] = useState(false);
   const adoptPending = useRef(autoAdopt);
 
-  const photos = dogPhotos(dog);
   const entry = liked[dog.id];
-  const isLiked = Boolean(entry);
   const requested = Boolean(entry?.requested);
   const available = dog.status === 'AVAILABLE';
-  const traits = (dog.traits ?? []).map((t) => TRAIT_LABELS[t]).filter(Boolean);
+  const traits = traitLabels(dog);
+  const facts = [
+    ['age', ageLabel(dog.age)],
+    ['size', SIZE_LABELS[dog.size]],
+    ['gender', GENDER_LABELS[dog.gender]],
+  ];
 
   // Desde el match (o ?adopt=1): abrir el formulario en cuanto sepamos si ya se pidió
   useEffect(() => {
@@ -40,17 +37,10 @@ export default function DogDetail({ dog, variant = 'sheet', autoAdopt = false, o
     }
   }, [ready, available, requested]);
 
-  function handleLike() {
-    if (onLike) onLike(dog);
-    else like(dog);
-  }
-
   function handlePass() {
-    if (onPass) onPass(dog);
-    else {
-      pass(dog);
-      onClose?.();
-    }
+    if (onPass) return onPass(dog);
+    pass(dog);
+    onClose?.();
   }
 
   function goBack() {
@@ -58,71 +48,10 @@ export default function DogDetail({ dog, variant = 'sheet', autoAdopt = false, o
     else router.push('/discover', 'back');
   }
 
-  let footer = null;
-  if (ready) {
-    if (!available) {
-      footer = <p className="dog-detail__notice">{dog.name} isn't available anymore</p>;
-    } else if (requested) {
-      footer = <p className="dog-detail__notice">Request sent · the shelter will write to you</p>;
-    } else if (isLiked) {
-      footer = (
-        <button type="button" className="btn btn--primary" onClick={() => setFormOpen(true)}>
-          request adoption
-        </button>
-      );
-    } else {
-      footer = (
-        <>
-          {!passed.includes(dog.id) && (
-            <button type="button" className="btn btn--outline-red" onClick={handlePass}>
-              not now
-            </button>
-          )}
-          <button type="button" className="btn btn--primary btn--wide" onClick={handleLike}>
-            I'd love to meet
-          </button>
-        </>
-      );
-    }
-  }
-
   return (
     <>
       <IonContent className="dog-detail">
-        <div className="dog-detail__photo">
-          <img src={photos[photo]} alt={dog.name} onError={showPlaceholder} />
-
-          {photos.length > 1 && (
-            <>
-              <button
-                type="button"
-                className="dog-detail__zone dog-detail__zone--prev"
-                aria-label="previous photo"
-                disabled={photo === 0}
-                onClick={() => setPhoto((p) => p - 1)}
-              />
-              <button
-                type="button"
-                className="dog-detail__zone dog-detail__zone--next"
-                aria-label="next photo"
-                disabled={photo === photos.length - 1}
-                onClick={() => setPhoto((p) => p + 1)}
-              />
-              <div className="dog-detail__bars">
-                {photos.map((url, i) => (
-                  <button
-                    key={url}
-                    type="button"
-                    className={i === photo ? 'is-active' : undefined}
-                    aria-label={`photo ${i + 1} of ${photos.length}`}
-                    aria-pressed={i === photo}
-                    onClick={() => setPhoto(i)}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-
+        <PhotoCarousel photos={dogPhotos(dog)} alt={dog.name}>
           {variant === 'sheet' ? (
             <button type="button" className="dog-detail__round dog-detail__round--end" aria-label="close" onClick={onClose}>
               <IonIcon icon={chevronDown} aria-hidden="true" />
@@ -132,7 +61,7 @@ export default function DogDetail({ dog, variant = 'sheet', autoAdopt = false, o
               <IonIcon icon={arrowBack} aria-hidden="true" />
             </button>
           )}
-        </div>
+        </PhotoCarousel>
 
         <div className="dog-detail__body">
           <div className="dog-detail__heading">
@@ -142,18 +71,12 @@ export default function DogDetail({ dog, variant = 'sheet', autoAdopt = false, o
           </div>
 
           <dl className="dog-detail__facts">
-            <div>
-              <dt>age</dt>
-              <dd>{ageLabel(dog.age)}</dd>
-            </div>
-            <div>
-              <dt>size</dt>
-              <dd>{SIZE_LABELS[dog.size]}</dd>
-            </div>
-            <div>
-              <dt>gender</dt>
-              <dd>{GENDER_LABELS[dog.gender]}</dd>
-            </div>
+            {facts.map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
           </dl>
 
           {traits.length > 0 && (
@@ -184,12 +107,16 @@ export default function DogDetail({ dog, variant = 'sheet', autoAdopt = false, o
         </div>
       </IonContent>
 
-      {footer && (
-        <IonFooter className="ion-no-border dog-detail__footer">
-          <IonToolbar>
-            <div className="dog-detail__actions">{footer}</div>
-          </IonToolbar>
-        </IonFooter>
+      {ready && (
+        <DogDetailActions
+          dog={dog}
+          requested={requested}
+          isLiked={Boolean(entry)}
+          canPass={!passed.includes(dog.id)}
+          onPass={handlePass}
+          onLike={() => (onLike ? onLike(dog) : like(dog))}
+          onRequest={() => setFormOpen(true)}
+        />
       )}
 
       <AdoptionForm dog={dog} isOpen={formOpen} onClose={() => setFormOpen(false)} />

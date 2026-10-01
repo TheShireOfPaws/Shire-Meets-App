@@ -8,7 +8,6 @@ export const EMPTY_PREFERENCES = {
   traits: [],
 };
 
-// Puntos por cada preferencia que encaja
 const POINTS = { size: 3, age: 3, gender: 1, apartment: 1, trait: 2 };
 const GREAT_MATCH_RATIO = 0.6;
 const GREAT_MATCH_MIN = 3;
@@ -39,13 +38,18 @@ export function maxScore(prefs) {
   );
 }
 
+export function countPreferences(p) {
+  if (!p) return 0;
+  return p.sizes.length + p.ages.length + p.traits.length + (p.gender ? 1 : 0) + (p.housing ? 1 : 0);
+}
+
 export function isGreatMatch(dog, prefs) {
   const max = maxScore(prefs);
   if (max < GREAT_MATCH_MIN) return false;
   return scoreDog(dog, prefs) >= max * GREAT_MATCH_RATIO;
 }
 
-// Los que mejor encajan primero; a igualdad, se mantiene el orden del backend
+// A igualdad de puntos se mantiene el orden del backend
 export function rankDogs(dogs, prefs) {
   return dogs
     .map((dog, i) => ({ dog, i, score: scoreDog(dog, prefs) }))
