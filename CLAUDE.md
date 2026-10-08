@@ -1,4 +1,4 @@
-# Shire Match — contexto del proyecto
+# Shire Meets — contexto del proyecto
 
 App móvil tipo Tinder para adoptar perros de **The Shire of Paws**. Ionic React + Capacitor.
 Consume el backend Spring Boot existente (repo `TheShireOfPaws-Backend`). La web (`TheShireOfPaws-Frontend`) es React + Vite y NO se toca.

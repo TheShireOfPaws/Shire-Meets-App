@@ -123,11 +123,9 @@ export default function Discover() {
           ))}
         </div>
         <DeckActions
-          topDog={deck[0]}
           canUndo={Boolean(lastAction)}
           onUndo={handleUndo}
           onSwipe={(dir) => topCardRef.current?.swipe(dir)}
-          onInfo={openDetail}
         />
       </>
     );

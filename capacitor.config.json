@@ -1,6 +1,6 @@
 {
   "appId": "com.theshireofpaws.match",
-  "appName": "Shire Match",
+  "appName": "Shire Meets",
   "webDir": "dist",
   "plugins": {
     "SystemBars": {
