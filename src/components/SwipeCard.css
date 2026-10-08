@@ -96,7 +96,7 @@
   background: linear-gradient(180deg, rgba(28, 20, 6, 0) 0%, rgba(28, 20, 6, 0.78) 100%);
 }
 
-/* Dorado con texto oscuro (el blanco no llega a 4.5:1) */
+/* Dark text on gold: white doesn't reach 4.5:1 */
 .great-badge {
   align-self: flex-start;
   padding: 4px 10px;

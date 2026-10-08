@@ -13,7 +13,7 @@ export default function DogProfile() {
   const location = useLocation();
   const { liked, refreshDog } = useSwipe();
 
-  // Mientras carga, lo que ya tenemos
+  // Show what we already have while loading
   const [dog, setDog] = useState(() =>
     location.state?.dog?.id === id ? location.state.dog : liked[id]?.dog ?? null
   );

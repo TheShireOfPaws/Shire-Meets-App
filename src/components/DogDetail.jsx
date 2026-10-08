@@ -11,8 +11,7 @@ import { dogPhotos, traitLabels } from '../utils/dog';
 import { isGreatMatch } from '../utils/matching';
 import './DogDetail.css';
 
-// variant: 'sheet' (hoja desde Discover/Matches) o 'page' (/dog/:id).
-// Sin onLike / onPass se usan las acciones del contexto.
+// variant: 'sheet' (from Discover/Matches) or 'page' (/dog/:id). Without onLike / onPass it uses the context actions.
 export default function DogDetail({ dog, variant = 'sheet', autoAdopt = false, onClose, onLike, onPass }) {
   const router = useIonRouter();
   const { ready, liked, passed, preferences, like, pass } = useSwipe();
@@ -29,7 +28,7 @@ export default function DogDetail({ dog, variant = 'sheet', autoAdopt = false, o
     ['gender', GENDER_LABELS[dog.gender]],
   ];
 
-  // Desde el match (o ?adopt=1): abrir el formulario en cuanto sepamos si ya se pidió
+  // From the match (or ?adopt=1): open the form once we know whether it was already requested
   useEffect(() => {
     if (adoptPending.current && ready && available && !requested) {
       adoptPending.current = false;

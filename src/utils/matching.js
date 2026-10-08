@@ -20,7 +20,7 @@ export function scoreDog(dog, prefs) {
   if (prefs.sizes.includes(dog.size)) score += POINTS.size;
   if (prefs.ages.includes(ageGroup(dog.age))) score += POINTS.age;
   if (prefs.gender && dog.gender === prefs.gender) score += POINTS.gender;
-  // En un piso encajan mejor los perros pequeños o medianos
+  // Small and medium dogs fit better in an apartment
   if (prefs.housing === 'APARTMENT' && SMALL_SIZES.includes(dog.size)) score += POINTS.apartment;
   const shared = (dog.traits ?? []).filter((t) => prefs.traits.includes(t));
   score += shared.length * POINTS.trait;
@@ -49,7 +49,7 @@ export function isGreatMatch(dog, prefs) {
   return scoreDog(dog, prefs) >= max * GREAT_MATCH_RATIO;
 }
 
-// A igualdad de puntos se mantiene el orden del backend
+// Ties keep the backend order
 export function rankDogs(dogs, prefs) {
   return dogs
     .map((dog, i) => ({ dog, i, score: scoreDog(dog, prefs) }))

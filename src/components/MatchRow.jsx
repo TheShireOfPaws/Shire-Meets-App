@@ -44,7 +44,7 @@ export default function MatchRow({ entry, onOpen, onRemove }) {
           remove
         </IonItemOption>
       </IonItemOptions>
-      {/* Deslizar no funciona con teclado ni lector de pantalla */}
+      {/* Swiping isn't available to keyboard or screen reader users */}
       <button type="button" className="matches__remove-a11y" onClick={remove}>
         remove {dog.name}
       </button>

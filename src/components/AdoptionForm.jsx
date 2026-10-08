@@ -39,13 +39,12 @@ export default function AdoptionForm({ dog, isOpen, onClose }) {
     setValues(initialValues(profile, preferences));
     setTouched({});
     setSubmitting(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   const setValue = (field, value) => setValues((v) => ({ ...v, [field]: value ?? '' }));
   const touch = (field) => setTouched((t) => ({ ...t, [field]: true }));
 
-  // Ionic muestra errorText solo con ion-invalid + ion-touched
+  // Ionic only shows errorText with ion-invalid + ion-touched
   const field = (name) => ({
     value: values[name],
     onIonInput: (e) => setValue(name, e.detail.value),
@@ -194,7 +193,7 @@ export default function AdoptionForm({ dog, isOpen, onClose }) {
             </IonItem>
           </IonList>
 
-          {/* Permite enviar con Enter desde los campos */}
+          {/* Lets Enter submit the form from any field */}
           <button type="submit" hidden aria-hidden="true" tabIndex={-1} />
         </form>
       </IonContent>

@@ -23,7 +23,7 @@ setupIonicReact({
   animated: !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
 });
 
-// Al salir de /matches, los matches nuevos pasan a vistos
+// Leaving /matches marks the new matches as seen
 function SeenTracker() {
   const { pathname } = useLocation();
   const { markAllSeen } = useSwipe();
@@ -38,7 +38,7 @@ function SeenTracker() {
 function MatchesTab() {
   const { pathname } = useLocation();
   const { liked } = useSwipe();
-  // Sin seen (guardados antes del rediseño) cuentan como vistos
+  // Entries saved before the redesign have no `seen` and count as seen
   const showDot =
     pathname !== '/matches' && Object.values(liked).some((entry) => entry.seen === false);
   return (

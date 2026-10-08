@@ -12,7 +12,7 @@
 
 .adoption-form__footer ion-toolbar {
   --background: var(--ion-background-color);
-  /* Ionic ignora padding en ion-toolbar: variables. Abajo suma ya la zona segura del móvil */
+  /* Ionic ignores padding on ion-toolbar, so use its variables; the bottom one already adds the safe area */
   --padding-top: 12px;
   --padding-start: 20px;
   --padding-end: 20px;

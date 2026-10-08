@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { IonModal } from '@ionic/react';
 import DogDetail from './DogDetail';
 
-// dog = null cierra la hoja
 export default function DogSheet({ dog, autoAdopt = false, onClose, onLike, onPass }) {
-  // Último perro mostrado: evita que la hoja se vacíe mientras baja
+  // Keeps the last dog so the sheet doesn't go blank while it slides down
   const [shown, setShown] = useState(dog);
   useEffect(() => {
     if (dog) setShown(dog);

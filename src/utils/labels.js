@@ -23,7 +23,7 @@ export const HOUSING_LABELS = {
   OTHER: 'other',
 };
 
-// Mismo orden que el enum DogTrait del backend
+// Same order as the backend DogTrait enum
 export const TRAIT_LABELS = {
   ACTIVE: 'active',
   CALM: 'calm',

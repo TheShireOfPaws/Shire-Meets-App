@@ -27,7 +27,7 @@ export default function Discover() {
   const [matchDog, setMatchDog] = useState(null);
   const [matchOpen, setMatchOpen] = useState(false);
   const [editingPrefs, setEditingPrefs] = useState(false);
-  const [detail, setDetail] = useState(null); // { dog, adopt }
+  const [detail, setDetail] = useState(null);
   const topCardRef = useRef(null);
 
   function decide(dog, dir) {
@@ -41,7 +41,7 @@ export default function Discover() {
     remove(dog.id);
   }
 
-  // Desde la hoja: si es la tarjeta de arriba, sale volando como con el gesto
+  // From the sheet: the top card flies out just like with the gesture
   function decideFromSheet(dog, dir) {
     setDetail(null);
     if (deck[0]?.id === dog.id && topCardRef.current) topCardRef.current.swipe(dir);

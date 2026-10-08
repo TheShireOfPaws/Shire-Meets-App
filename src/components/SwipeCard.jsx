@@ -4,7 +4,7 @@ import { ageLabel } from '../utils/labels';
 import { dogPhotos, genderSize, showPlaceholder, traitLabels } from '../utils/dog';
 import './SwipeCard.css';
 
-const SWIPE_RATIO = 0.28; // fracción del ancho
+const SWIPE_RATIO = 0.28; // of the card width
 const SWIPE_VELOCITY = 0.45;
 const TAP_MAX = 6; // px
 const MAX_ROTATION = 15;
@@ -26,7 +26,7 @@ const SwipeCard = forwardRef(function SwipeCard(
   const leavingRef = useRef(false);
   const lastDyRef = useRef(0);
 
-  // Los callbacks cambian en cada render; el gesto se crea una vez y los lee de aquí
+  // Callbacks change every render; the gesture is created once and reads them from here
   const callbacks = useRef({ onSwiped, onOpen });
   callbacks.current = { onSwiped, onOpen };
 
@@ -90,7 +90,7 @@ const SwipeCard = forwardRef(function SwipeCard(
 
         if (Math.abs(dx) < TAP_MAX && Math.abs(dy) < TAP_MAX) {
           snapBack();
-          // Tap: mitad izquierda / derecha cambia de foto; con una sola foto abre el perfil
+          // Tap: left/right half changes photo; with a single photo it opens the profile
           if (photos.length > 1) {
             const rect = el.getBoundingClientRect();
             const step = (d.startX - rect.left) / rect.width > 0.5 ? 1 : -1;
@@ -107,7 +107,6 @@ const SwipeCard = forwardRef(function SwipeCard(
     });
     gesture.enable(true);
     return () => gesture.destroy();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTop, dog]);
 
   function handleKeyDown(e) {
