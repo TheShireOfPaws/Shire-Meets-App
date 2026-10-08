@@ -5,7 +5,7 @@ import { rankDogs } from '../utils/matching';
 
 export const VISIBLE_CARDS = 3;
 const PAGE_SIZE = 50;
-// Se cargan todos (hasta 500 por tanda) para poder ordenarlos por afinidad
+// Load every dog (up to 500 per batch) so they can be ranked by preferences
 const MAX_PAGES = 10;
 
 export default function useDogDeck({ ready, seenIds, preferences }) {
@@ -16,7 +16,7 @@ export default function useDogDeck({ ready, seenIds, preferences }) {
 
   const pageRef = useRef(0);
   const loadingRef = useRef(false);
-  // Sube al reiniciar la pila: descarta respuestas de cargas anteriores
+  // Bumped on reset to discard responses from earlier loads
   const generationRef = useRef(0);
   const latest = useRef({});
   latest.current = { deck, seenIds, preferences };
@@ -51,7 +51,7 @@ export default function useDogDeck({ ready, seenIds, preferences }) {
     }
   }, []);
 
-  // También durante la bienvenida, para que las preferencias puedan contar los "great match"
+  // Also during the welcome sheet, so preferences can count the great matches
   useEffect(() => {
     if (ready && deck.length < VISIBLE_CARDS && hasMore && !loading && !error) loadMore();
   }, [ready, deck.length, hasMore, loading, error, loadMore]);

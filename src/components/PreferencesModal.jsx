@@ -19,7 +19,6 @@ const GENDER_OPTIONS = [
 ];
 const HOUSING_OPTIONS = [['', 'rather not say'], ...Object.entries(HOUSING_LABELS)];
 
-// candidates: perros por ver, para contar los "great match" del borrador
 export default function PreferencesModal({
   isOpen,
   firstTime,
@@ -44,7 +43,7 @@ export default function PreferencesModal({
       breakpoints={[0, 0.92]}
       initialBreakpoint={0.92}
       handle={!firstTime}
-      // La primera vez solo se cierra eligiendo o saltando
+      // The first time it only closes by saving or skipping
       canDismiss={firstTime ? (data, role) => role !== 'gesture' && role !== 'backdrop' : true}
       className="sheet-modal preferences-modal"
     >

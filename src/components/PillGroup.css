@@ -28,7 +28,7 @@
   cursor: pointer;
 }
 
-/* Radio o casilla nativos, invisibles pero accesibles (teclado y lector de pantalla) */
+/* Native radio/checkbox, visually hidden but still keyboard and screen reader accessible */
 .pill input {
   position: absolute;
   inset: 0;

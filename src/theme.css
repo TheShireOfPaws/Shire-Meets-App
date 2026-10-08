@@ -9,11 +9,11 @@
   --shire-soft: #f2eadf;
   --shire-line: #eee4d6;
   --shire-muted: #6b5a3a;
-  --shire-hint: #7a6a4a; /* el #8a7a5a del diseño se queda en 3.9:1 */
+  --shire-hint: #7a6a4a; /* the design's #8a7a5a only reaches 3.9:1 */
   --shire-gold-light: #e8c46a;
   --shire-mint: #cfe0d4;
   --shire-dark: #1c1406;
-  --shire-on-gold: #1f1600; /* texto sobre dorado, 5.5:1 */
+  --shire-on-gold: #1f1600; /* text on gold, 5.5:1 */
 
   --ion-font-family: 'Fredoka', system-ui, sans-serif;
 
@@ -26,7 +26,7 @@
 
   --ion-color-secondary: #b8860b;
   --ion-color-secondary-rgb: 184, 134, 11;
-  /* Texto oscuro sobre dorado: el blanco solo llega a 3.25:1 */
+  /* Dark text on gold: white only reaches 3.25:1 */
   --ion-color-secondary-contrast: #1f1600;
   --ion-color-secondary-contrast-rgb: 31, 22, 0;
   --ion-color-secondary-shade: #a2760a;
@@ -78,7 +78,7 @@ ion-toast::part(message) {
   white-space: pre-line;
 }
 
-/* Android 15+ dibuja bajo la status bar: Capacitor inyecta --safe-area-inset-* (env() da 0 en WebViews antiguas) */
+/* Android 15+ draws under the status bar: Capacitor injects --safe-area-inset-* (env() is 0 on old WebViews) */
 :root {
   --ion-safe-area-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
   --ion-safe-area-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
@@ -135,13 +135,13 @@ ion-app::after {
   font-weight: 700;
 }
 
-/* ion-tab-bar lleva contain: strict, así que height: auto daría 0: altura explícita */
+/* ion-tab-bar has contain: strict, so height: auto would be 0 */
 ion-tab-bar {
   --border: 0;
   gap: 10px;
-  /* content-box (lo fuerza Ionic): 52px de botón + el padding */
+  /* content-box (forced by Ionic): 52px button + padding */
   height: 52px;
-  /* 26px abajo como en el diseño, o la zona segura del móvil si es mayor */
+  /* 26px as in the design, or the safe area if larger */
   padding: 8px 20px max(26px, var(--ion-safe-area-bottom, 0px));
   border-top: 1px solid var(--shire-line);
 }
@@ -194,7 +194,7 @@ ion-tab-button.tab-selected {
   white-space: nowrap;
 }
 
-/* Sin flex por defecto: en columnas, flex: 1 anulaba la altura y el botón quedaba finito */
+/* No flex by default: in columns, flex: 1 collapsed the button height */
 .btn {
   flex: none;
   box-sizing: border-box;

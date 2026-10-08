@@ -9,7 +9,7 @@ const SwipeContext = createContext(null);
 export function SwipeProvider({ children }) {
   const [state, setState] = useState(initialState);
   const [ready, setReady] = useState(false);
-  // Copia síncrona: undo() necesita devolver el perro en el mismo tick
+  // Synchronous copy: undo() has to return the dog in the same tick
   const stateRef = useRef(initialState);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export function SwipeProvider({ children }) {
         stateRef.current = next;
         setState(next);
       })
-      .catch((err) => console.warn('No se pudo leer el estado guardado', err))
+      .catch((err) => console.warn('Could not read the saved state', err))
       .finally(() => setReady(true));
   }, []);
 
@@ -31,7 +31,7 @@ export function SwipeProvider({ children }) {
       stateRef.current = next;
       setState(next);
       Preferences.set({ key: STORAGE_KEY, value: JSON.stringify(next) }).catch((err) =>
-        console.warn('No se pudo guardar el estado', err)
+        console.warn('Could not save the state', err)
       );
     };
 
@@ -63,6 +63,6 @@ export function SwipeProvider({ children }) {
 
 export function useSwipe() {
   const ctx = useContext(SwipeContext);
-  if (!ctx) throw new Error('useSwipe debe usarse dentro de SwipeProvider');
+  if (!ctx) throw new Error('useSwipe must be used inside SwipeProvider');
   return ctx;
 }

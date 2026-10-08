@@ -1,9 +1,9 @@
 export const initialState = {
   liked: {}, // { [id]: { dog, likedAt, requested, seen } }
   passed: [],
-  lastAction: null, // { type: 'like' | 'pass', dog }
+  lastAction: null,
   profile: null,
-  preferences: null, // null = aún no ha pasado por la pantalla de preferencias
+  preferences: null, // null = the preferences sheet hasn't been completed yet
 };
 
 const now = () => new Date().toISOString();

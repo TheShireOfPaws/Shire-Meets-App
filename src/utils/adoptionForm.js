@@ -39,7 +39,7 @@ function motivationError(value) {
   return length > 2000 ? 'Up to 2000 characters.' : null;
 }
 
-// Mismas reglas que AdoptionRequestRequest en el backend
+// Same rules as AdoptionRequestRequest in the backend
 export function validate(v) {
   const errors = {
     requesterFirstName: nameError(v.requesterFirstName, 'first name'),
@@ -53,7 +53,7 @@ export function validate(v) {
   return Object.fromEntries(Object.entries(errors).filter(([, message]) => message));
 }
 
-// Datos guardados del adoptante; si aún no hay perfil, el tipo de casa sale de las preferencias
+// Saved adopter data; without a profile, the housing type comes from the preferences
 export function initialValues(profile, preferences) {
   const saved = Object.entries(profile ?? {})
     .filter(([key, value]) => key in EMPTY_FORM && value != null)

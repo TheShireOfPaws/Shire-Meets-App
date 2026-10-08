@@ -2,13 +2,13 @@ import { GENDER_LABELS, SIZE_LABELS, TRAIT_LABELS } from './labels';
 
 export const PLACEHOLDER_IMG = '/placeholder-dog.svg';
 
-// Una sola vez, por si también fallara la huella
+// Only once, in case the placeholder fails too
 export function showPlaceholder(e) {
   if (!e.currentTarget.src.endsWith(PLACEHOLDER_IMG)) e.currentTarget.src = PLACEHOLDER_IMG;
 }
 
 export function dogPhotos(dog) {
-  const photos = [dog.photoUrl, ...(dog.extraPhotoUrls ?? [])].filter(Boolean);
+  const photos = [...new Set([dog.photoUrl, ...(dog.extraPhotoUrls ?? [])].filter(Boolean))];
   return photos.length ? photos : [PLACEHOLDER_IMG];
 }
 

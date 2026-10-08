@@ -81,7 +81,7 @@
   cursor: pointer;
 }
 
-/* Solo estas animaciones; reduced-motion las anula desde theme.css */
+/* reduced-motion disables these from theme.css */
 @keyframes match-pop {
   from {
     opacity: 0;
